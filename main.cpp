@@ -41,18 +41,11 @@ int main(int argc, char *argv[])
 			atr3[l] = NULL;
 			atr4[l] = NULL;
 		}
-		cout << ">> ";
+		cout << ">>  ";
 		cin>> comando;
-		
-		/*gets(comando);
 		int largo = strlen(comando);
-		for (int letra = 0; letra < largo; ++letra)  
-			
-		{
-			
-			comando[letra] = tolower(comando[letra]); 
-			
-		}*/
+		for (int letra = 0; letra < largo; ++letra) 
+			comando[letra] = tolower(comando[letra]);
 		
 		char *nuevo = strtok(comando, delimitador);
 		nuevo = strtok(NULL, delimitador);
@@ -95,8 +88,7 @@ int main(int argc, char *argv[])
 		else
 		{
 			cout << endl
-				<< '\t' << "No existe ese comando, /help para mas ayuda" << endl;
-			cout << '\t' << "Advertencia: evita utilizar espacios." << endl
+				<< '\t' << "No existe ese comando, /help para mas ayuda" << endl
 				<< endl;
 		}
 	}

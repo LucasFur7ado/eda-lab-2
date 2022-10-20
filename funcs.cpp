@@ -141,7 +141,6 @@ TipoRet insertInto(char *nombreTabla, char *columnaTupla, char *valoresTupla, Ta
 	char matrizAtts[50][100] = {0}, matrizVals[50][100] = {0};
 	char *nuev = strtok(columnaTupla, delimitador);
 	int i = 0, contAtts = 0, contVals = 0;
-	
 	if (nuev)
 	{
 		while (nuev)
