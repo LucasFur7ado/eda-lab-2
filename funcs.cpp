@@ -141,6 +141,7 @@ TipoRet insertInto(char *nombreTabla, char *columnaTupla, char *valoresTupla, Ta
 	char matrizAtts[50][100] = {0}, matrizVals[50][100] = {0};
 	char *nuev = strtok(columnaTupla, delimitador);
 	int i = 0, contAtts = 0, contVals = 0;
+	
 	if (nuev)
 	{
 		while (nuev)
@@ -460,22 +461,34 @@ TipoRet printDataTable(char *NombreTabla, char *ordenadaPor, Table db)
 			Dato pointer_aux_2 = aux->pointer;
 			cout << endl
 				<< '\t';
-			while (pointer_aux_2->sigCol)
-			{
-				cout << pointer_aux_2->attName << ":";
+			while (pointer_aux_2->sigCol){
 				pointer_aux_2 = pointer_aux_2->sigCol;
 			}
+			
+			while (pointer_aux_2->antCol)
+			{
+				
+				cout << pointer_aux_2->attName << ":";
+				pointer_aux_2 = pointer_aux_2->antCol;
+			}
 			cout << pointer_aux_2->attName << endl;
-			pointer_aux_2 = aux->pointer;
+			
+			pointer_aux_2=aux->pointer;
+			
+			while (pointer_aux_2->sigCol){
+				pointer_aux_2 = pointer_aux_2->sigCol;
+			}
 			pointer_aux = pointer_aux_2->sigTup;
 			pointer_aux_2 = pointer_aux;
 			
-			while (pointer_aux->sigCol || pointer_aux->sigTup)
+			while (pointer_aux->antCol || pointer_aux->sigTup)
 			{
 				cout << endl
 					<< '\t';
-				while (pointer_aux->sigCol)
+				while (pointer_aux->antCol)
 				{
+					
+					
 					if (!strcmp(pointer_aux->valChar, "EMPTY") && (*pointer_aux->valInt == 0))
 						cout << "EMPTY"
 						<< ":";
@@ -486,7 +499,8 @@ TipoRet printDataTable(char *NombreTabla, char *ordenadaPor, Table db)
 						else
 							cout << *pointer_aux->valInt << ":";
 					}
-					pointer_aux = pointer_aux->sigCol;
+					
+					pointer_aux = pointer_aux->antCol;
 				}
 				if (!pointer_aux->sigCol && !pointer_aux->antCol)
 				{
@@ -503,7 +517,8 @@ TipoRet printDataTable(char *NombreTabla, char *ordenadaPor, Table db)
 					pointer_aux_2 = pointer_aux;
 				}
 			}
-			if (!pointer_aux->antCol)
+			
+			if (!pointer_aux->sigCol) //?
 			{
 				cout << endl
 					<< '\t';
@@ -560,7 +575,12 @@ TipoRet printMetadata(char *tableName, Table db)
 			Dato pointer_aux_2 = aux->pointer;
 			cout << endl
 				<< endl;
-			while (pointer_aux_2->sigCol)
+			
+			while (pointer_aux_2->sigCol){
+				pointer_aux_2 = pointer_aux_2->sigCol;
+			}
+			
+			while (pointer_aux_2->antCol)
 			{
 				cout << '\t';
 				cout << pointer_aux_2->attName;
@@ -569,7 +589,7 @@ TipoRet printMetadata(char *tableName, Table db)
 				cout << "-";
 				cout << pointer_aux_2->calif;
 				cout << endl;
-				pointer_aux_2 = pointer_aux_2->sigCol;
+				pointer_aux_2 = pointer_aux_2->antCol;
 			}
 			cout << '\t';
 			cout << pointer_aux_2->attName;

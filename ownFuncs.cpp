@@ -53,6 +53,7 @@ void orderTable(Dato &pointer, char column[50][100], int cont)
 	Dato aux = pointer, aux2, aux3;
 	bool flag = true;
 	int val1, val2;
+	for(int f = 0; f < 2; f++){
 	if (!cont)
 	{
 		while (aux && strcmp(aux->calif, "PRIMARY_KEY") != 0)
@@ -65,10 +66,11 @@ void orderTable(Dato &pointer, char column[50][100], int cont)
 	}
 	aux = aux->sigTup;
 	aux2 = aux;
-
+	
 	while (flag)
 	{
 		flag = false;
+		cout<<"WHILE"<<endl;
 		aux = aux2;
 		while (aux && aux->sigTup)
 		{
@@ -80,17 +82,18 @@ void orderTable(Dato &pointer, char column[50][100], int cont)
 				val2 = *aux->sigTup->valInt;
 			else
 				val2 = 0;
-			if (((!strcmp(aux->tipo, "integer") && val1 >= val2) || (!strcmp(aux->tipo, "character") && aux->valChar[0] >= aux->sigTup->valChar[0])))
+			if (((!strcmp(aux->tipo, "integer") && val1 >= val2) || 
+				(!strcmp(aux->tipo, "character") && aux->valChar[0] >= aux->sigTup->valChar[0])))
 			{
 				flag = true;
-				while (aux->sigTup && ((!strcmp(aux->tipo, "integer") && val1 >= val2) || (!strcmp(aux->tipo, "character") && aux->valChar[0] >= aux->sigTup->valChar[0])))
+				while (aux->sigTup && ((!strcmp(aux->tipo, "integer") && val1 >= val2) 
+					   || (!strcmp(aux->tipo, "character") && aux->valChar[0] >= aux->sigTup->valChar[0])))
 				{
-
 					swap(aux);
 					aux3 = aux;
 					if (aux->sigCol || aux->antCol)
 					{
-
+						
 						while (aux->sigCol)
 							aux = aux->sigCol;
 						while (aux->antCol)
@@ -107,10 +110,15 @@ void orderTable(Dato &pointer, char column[50][100], int cont)
 							swap(aux);
 						aux = aux3;
 					}
+					if(aux && aux->sigTup && !strcmp(aux->tipo, "integer")){
+						val1 = *aux->valInt;
+						val2 = *aux->sigTup->valInt;
+					}
 				}
-			}
-			aux = aux->sigTup;
+			}else 
+				aux = aux->sigTup;
 		}
+	}
 	}
 }
 
@@ -131,6 +139,8 @@ void swap(Dato &aux)
 
 char validateEntry(Dato pointer, char args[50][100], char vals[50][100], int cont)
 {
+	// FUNCION EN PROCESO
+	
 	Dato aux = pointer, aux2;
 	bool flag0 = true, flag1;
 	int pos;
@@ -142,39 +152,39 @@ char validateEntry(Dato pointer, char args[50][100], char vals[50][100], int con
 			flag0 = false;
 			for (int i = 0; i < cont; i++)
 				if (!strcmp(args[i], aux->attName))
-				{
+			{
 					pos = cont;
 					flag0 = true;
-				}
-			aux2 = aux->sigTup;
-			while (aux2)
-			{
-				if (!strcmp(aux2->tipo, "integer"))
-				{
-					int *valor_int;
-					int valor;
-					valor = strtol(vals[pos - 1], NULL, 10);
-					valor_int = &valor;
-					if (*aux2->valInt == *valor_int)
-					{
-						cout << endl
-							 << '\t' << "Ya existe una tupla con esa clave primaria." << endl
-							 << endl;
-						return false;
-					}
-				}
-				else
-				{
-					if (!strcmp(aux2->valChar, vals[pos - 1]))
-					{
-						cout << endl
-							 << '\t' << "Ya existe una tupla con esa clave primaria." << endl
-							 << endl;
-						return false;
-					}
-				}
-				aux2 = aux2->sigTup;
 			}
+				aux2 = aux->sigTup;
+				while (aux2)
+				{
+					if (!strcmp(aux2->tipo, "integer"))
+					{
+						int *valor_int;
+						int valor;
+						valor = strtol(vals[pos - 1], NULL, 10);
+						valor_int = &valor;
+						if (*aux2->valInt == *valor_int)
+						{
+							cout << endl
+								<< '\t' << "Ya existe una tupla con esa clave primaria." << endl
+								<< endl;
+							return false;
+						}
+					}
+					else
+					{
+						if (!strcmp(aux2->valChar, vals[pos - 1]))
+						{
+							cout << endl
+								<< '\t' << "Ya existe una tupla con esa clave primaria." << endl
+								<< endl;
+							return false;
+						}
+					}
+					aux2 = aux2->sigTup;
+				}
 		}
 		if (!strcmp(aux->calif, "NOT_EMPTY"))
 		{
@@ -186,9 +196,9 @@ char validateEntry(Dato pointer, char args[50][100], char vals[50][100], int con
 			if (!flag1)
 			{
 				cout << endl
-					 << '\t' << "Hay columnas que no admiten valores nulos." << endl;
+					<< '\t' << "Hay columnas que no admiten valores nulos." << endl;
 				cout << '\t' << ">> printMetaData( nombreTabla ) para ver detalles." << endl
-					 << endl;
+					<< endl;
 				return false;
 			}
 		}
@@ -197,8 +207,8 @@ char validateEntry(Dato pointer, char args[50][100], char vals[50][100], int con
 	if (!flag0)
 	{
 		cout << endl
-			 << '\t' << "Debes ingresar una clave primaria." << endl
-			 << endl;
+			<< '\t' << "Debes ingresar una clave primaria." << endl
+			<< endl;
 		return false;
 	}
 	return true;
@@ -222,8 +232,8 @@ bool alreadyColumn(Dato pointer, char *colName)
 void help()
 {
 	cout << endl
-		 << '\t' << "Comandos disponibles: " << endl
-		 << endl;
+		<< '\t' << "Comandos disponibles: " << endl
+		<< endl;
 	cout << '\t' << "showTables()" << endl;
 	cout << '\t' << "dropTable(nombreTabla)" << endl;
 	cout << '\t' << "createTable(nombreTabla)" << endl;
@@ -233,7 +243,7 @@ void help()
 	cout << '\t' << "deleteTupla(nombreTabla,columna=valor)" << endl;
 	cout << '\t' << "insertInto(nombreTabla,columna1:columna2,valor1:valor2)" << endl;
 	cout << '\t' << "addCol(nombreTabla,nombreColumna,tipoColumna,calificador)" << endl
-		 << endl;
+		<< endl;
 }
 
 void deleteAllTuplas(Dato &pointer)
@@ -285,11 +295,11 @@ void searchCondition(Dato &pointer_aux, char *valor_char, int *valor_int, char *
 	while (aux->sigTup)
 	{
 		if (((!strcmp(aux->tipo, "character") && strcmp(aux->valChar, valor_char) != 0 || !strcmp(aux->tipo, "integer") && (*aux->valInt != *valor_int)) && !strcmp(operand, "<>")) ||
-
+			
 			((!strcmp(aux->tipo, "character") && !strcmp(aux->valChar, valor_char) || !strcmp(aux->tipo, "integer") && (*aux->valInt == *valor_int)) && !strcmp(operand, "=")) ||
-
+			
 			((!strcmp(aux->tipo, "character") && strcmp(aux->valChar, valor_char) < 0 || !strcmp(aux->tipo, "integer") && (*aux->valInt < *valor_int)) && !strcmp(operand, "<")) ||
-
+			
 			((!strcmp(aux->tipo, "character") && strcmp(aux->valChar, valor_char) > 0 || !strcmp(aux->tipo, "integer") && (*aux->valInt > *valor_int)) && !strcmp(operand, ">")))
 		{
 			aux = aux->sigTup;
@@ -299,11 +309,11 @@ void searchCondition(Dato &pointer_aux, char *valor_char, int *valor_int, char *
 			aux = aux->sigTup;
 	}
 	if (((!strcmp(aux->tipo, "character") && strcmp(aux->valChar, valor_char) != 0 || !strcmp(aux->tipo, "integer") && (*aux->valInt != *valor_int)) && !strcmp(operand, "<>")) ||
-
+		
 		((!strcmp(aux->tipo, "character") && !strcmp(aux->valChar, valor_char) || !strcmp(aux->tipo, "integer") && (*aux->valInt == *valor_int)) && !strcmp(operand, "=")) ||
-
+		
 		((!strcmp(aux->tipo, "character") && strcmp(aux->valChar, valor_char) < 0 || !strcmp(aux->tipo, "integer") && (*aux->valInt < *valor_int)) && !strcmp(operand, "<")) ||
-
+		
 		((!strcmp(aux->tipo, "character") && strcmp(aux->valChar, valor_char) > 0 || !strcmp(aux->tipo, "integer") && (*aux->valInt > *valor_int)) && !strcmp(operand, ">")))
 		deleteWholeTupla(aux);
 }
@@ -311,7 +321,7 @@ void searchCondition(Dato &pointer_aux, char *valor_char, int *valor_int, char *
 void credits()
 {
 	cout << endl
-		 << endl;
+		<< endl;
 	cout << '\t' << ":::::.'::::::::::::::::" << endl;
 	cout << '\t' << ":::::   '::::::::::::::" << endl;
 	cout << '\t' << ":::'   .:::::::::::::::" << endl;
@@ -330,9 +340,9 @@ void credits()
 	cout << '\t' << "::'           :::::::::" << endl;
 	cout << '\t' << "::            :::::::::" << endl;
 	cout << '\t' << ":.            :::::::::" << endl
-		 << endl;
+		<< endl;
 	cout << '\t' << "developed by" << endl;
 	cout << '\t' << "Lucas Furtado" << endl;
 	cout << '\t' << "& Santiago Perron" << endl
-		 << endl;
+		<< endl;
 }
