@@ -39,7 +39,7 @@ void insertar(Table &, Table);
 void printTables(Table);
 void checkTables(Table);
 
-Table checkNameP(Table, char *);
+void checkNameP(Table &, Table &, char *);
 
 bool checkName(Table, char *);
 
