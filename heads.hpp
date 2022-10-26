@@ -18,8 +18,8 @@ typedef dato *Dato;
 struct table{
 	char *name;
 	Dato pointer; 
-	table *sigTable;
-	table *antTable;
+	table *der;
+	table *izq;
 };
 typedef table *Table;
 
@@ -34,6 +34,14 @@ TipoRet dropCol(char *, char *, Table);
 TipoRet printMetadata(char *, Table);
 TipoRet createTable(char *, Table &);
 TipoRet dropTable(char *, Table &);
+
+void insertar(Table &, Table);
+void printTables(Table);
+void checkTables(Table);
+
+Table checkNameP(Table, char *);
+
+bool checkName(Table, char *);
 
 #include "basics.hpp"
 #include "ownFuncs.hpp"

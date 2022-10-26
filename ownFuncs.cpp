@@ -19,23 +19,6 @@ void fillAtr(char *atr, int i, int numAtr, char *nuevo)
 			atr[c] = nuevo[c];
 }
 
-void showTables(Table db)
-{
-	Table aux = db;
-	if (!aux)
-		printf("No hay tablas\n");
-	else
-	{
-		while (aux)
-		{
-			cout << "======================" << endl;
-			cout << "TABLE: " << aux->name << endl;
-			cout << "======================" << endl;
-			aux = aux->sigTable;
-		}
-	}
-}
-
 bool thereIsPk(Dato pointer)
 {
 	Dato aux = pointer;

@@ -6,7 +6,6 @@
 void help();
 void credits();
 void swap(Dato &);
-void showTables(Table db);
 void deleteAllTuplas(Dato &);
 void deleteWholeTupla(Dato &);
 void equal(Dato &, int *, char *);

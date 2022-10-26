@@ -15,7 +15,7 @@ TipoRet dropTable(char *atr1, Table &db)
 	Table aux = db;
 	
 	while (aux && strcmp(aux->name, atr1) != 0)
-		aux = aux->sigTable;
+		aux = aux->der;
 	if (!aux)
 	{
 		cout << endl
@@ -48,22 +48,22 @@ TipoRet dropTable(char *atr1, Table &db)
 		}
 		if (db == aux)
 		{
-			db = db->sigTable;
+			db = db->der;
 			delete aux;
 			if (db)
 			{
-				db->antTable = NULL;
+				db->izq = NULL;
 			}
 			return OK;
 		}
 		else
 		{
-			aux = aux->antTable;
-			aux_table2 = aux->sigTable;
-			aux->sigTable = aux_table2->sigTable;
-			if (aux_table2->sigTable)
+			aux = aux->izq;
+			aux_table2 = aux->der;
+			aux->der = aux_table2->der;
+			if (aux_table2->der)
 			{
-				aux_table2->sigTable->antTable = aux;
+				aux_table2->der->izq = aux;
 			}
 			delete aux_table2;
 		}
@@ -101,7 +101,7 @@ TipoRet deleteTupla(char *atr1, char *atr2, Table &db)
 	
 	Table aux = db;
 	while (aux && strcmp(aux->name, atr1) != 0)
-		aux = aux->sigTable;
+		aux = aux->der;
 	if (!aux)
 	{
 		cout << endl
@@ -180,7 +180,7 @@ TipoRet insertInto(char *nombreTabla, char *columnaTupla, char *valoresTupla, Ta
 		return ERROR;
 	}
 	while (aux && strcmp(aux->name, nombreTabla) != 0)
-		aux = aux->sigTable;
+		aux = aux->der;
 	if (!aux)
 	{
 		cout << endl
@@ -284,15 +284,15 @@ TipoRet addCol(char *nombreTabla, char *NombreCol, char *tipoCol, char *califica
 		return ERROR;
 	}
 	
-	while (aux && strcmp(aux->name, nombreTabla) != 0)
-		aux = aux->sigTable;
-	if (!aux)
+	if (checkName(db, nombreTabla))
 	{
 		cout << endl
 			<< '\t' << "Parece que la tabla no existe." << endl
 			<< endl;
 		return ERROR;
 	}
+	aux = checkNameP(db, nombreTabla);
+	cout<<"AUX: "<<aux->name<<endl;
 	if (alreadyColumn(aux->pointer, NombreCol))
 	{
 		cout << endl
@@ -376,25 +376,69 @@ TipoRet createTable(char *atr1, Table &db)
 		return ERROR;
 	}
 	Table aux = db;
-	while (aux)
-	{
-		if (!strcmp(aux->name, atr1))
-		{
-			cout << endl
-				<< '\t' << "El nombre de la tabla ya existe." << endl
-				<< endl;
-			return ERROR;
-			break;
-		}
-		else
-		{
-			aux = aux->sigTable;
-		}
-	}
-	insertarInicio(db, createTableNode(atr1));
+	
+	if(!checkName(aux, atr1))
+		return ERROR;
+	
+	//insertarInicio(db, createTableNode(atr1));
+	insertar(db, createTableNode(atr1));
 	if (!db)
 		return ERROR;
 	return OK;
+}
+
+void insertar (Table &arbol, Table v)
+{
+	if (!arbol)
+		arbol=v;
+	else
+		if(strcmp(v->name, arbol->name) < 0)
+			insertar(arbol->izq,v);
+		else
+			if(strcmp(v->name, arbol->name) > 0)
+				insertar(arbol->der, v);
+}
+
+void printTables(Table arbol)
+{
+	if(!arbol)
+		cout<<"No hay tablas"<<endl;
+	else
+		checkTables(arbol);
+}
+
+void checkTables(Table arbol)
+{
+	if (!arbol)
+		return;
+	printTables(arbol->izq);
+	cout<<arbol->name<<" ";
+	printTables(arbol->der);
+};
+
+bool checkName(Table arbol, char *tableName)
+{
+	if(!arbol)
+		return true;
+	cout<<"NOMBRE: "<<tableName<<endl;
+	cout<<"ARBOLNAME: "<<arbol->name<<endl;
+	if(!strcmp(arbol->name, tableName))
+	{
+		cout<<"El nombre de la tabla ya existe."<<endl;
+		return false;
+	}
+	checkName(arbol->izq, tableName);
+	checkName(arbol->der, tableName);
+}
+
+Table checkNameP(Table arbol, char *tableName)
+{
+	if(!arbol)
+		return arbol;
+	if(!strcmp(arbol->name, tableName))
+		return arbol;
+	checkName(arbol->izq, tableName);
+	checkName(arbol->der, tableName);
 }
 
 TipoRet printDataTable(char *NombreTabla, char *ordenadaPor, Table db)
@@ -430,8 +474,8 @@ TipoRet printDataTable(char *NombreTabla, char *ordenadaPor, Table db)
 				<< endl;
 			return ERROR;
 		}
-		while (aux->sigTable && strcmp(aux->name, NombreTabla) != 0)
-			aux = aux->sigTable;
+		while (aux->der && strcmp(aux->name, NombreTabla) != 0)
+			aux = aux->der;
 		if (strcmp(aux->name, NombreTabla) != 0)
 		{
 			cout << endl
@@ -553,8 +597,8 @@ TipoRet printMetadata(char *tableName, Table db)
 				<< endl;
 			return ERROR;
 		}
-		while (aux->sigTable && strcmp(aux->name, tableName) != 0)
-			aux = aux->sigTable;
+		while (aux->der && strcmp(aux->name, tableName) != 0)
+			aux = aux->der;
 		if (strcmp(aux->name, tableName) != 0)
 		{
 			cout << endl
@@ -608,7 +652,7 @@ TipoRet dropCol(char *atr1, char *atr2, Table db)
 {
 	Table aux = db;
 	while (aux && strcmp(aux->name, atr1) != 0)
-		aux = aux->sigTable;
+		aux = aux->der;
 	if (!aux)
 	{
 		cout << endl

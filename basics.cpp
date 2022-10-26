@@ -15,8 +15,8 @@ Table createTableNode(char *name)
 	Table n = new table;
 	n->name = name;
 	n->pointer = NULL;
-	n->sigTable = NULL;
-	n->antTable = NULL;
+	n->der = NULL;
+	n->izq = NULL;
 	return n;
 }
 
@@ -41,13 +41,13 @@ void insertarInicio(Table &db, Table newTable)
 	if (!db)
 	{
 		db = newTable;
-		db->sigTable = NULL;
-		db->antTable = NULL;
+		db->der = NULL;
+		db->izq = NULL;
 	}
 	else
 	{
-		db->antTable = newTable;
-		newTable->sigTable = db;
+		db->izq = newTable;
+		newTable->der = db;
 		db = newTable;
 	}
 }

@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
 	char createComm[100] = "createTable";
 	char dropTableComm[100] = "dropTable";
 	char insertIntoComm[100] = "insertInto";
-	char showTablesComm[100] = "showTables";
+	char printTablesComm[100] = "printTables";
 	char deleteTuplaComm[100] = "deleteTupla";
 	char printMetadataComm[100] = "printMetadata";
 	char printDataTableComm[100] = "printDataTable";
@@ -70,8 +70,8 @@ int main(int argc, char *argv[])
 			createTable(atr1, db);
 		else if (!strcmp(comando, addColComm))
 			addCol(atr1, atr2, atr3, atr4, db);
-		else if (!strcmp(comando, showTablesComm))
-			showTables(db);
+		else if (!strcmp(comando, printTablesComm))
+			printTables(db);
 		else if (!strcmp(comando, printDataTableComm))
 			printDataTable(atr1, atr2, db);
 		else if (!strcmp(comando, insertIntoComm))
