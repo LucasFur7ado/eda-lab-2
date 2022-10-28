@@ -208,7 +208,7 @@ TipoRet insertInto(char *nombreTabla, char *columnaTupla, char *valoresTupla, Ta
 	}
 	while (empty_aux)
 	{
-		insertarInicioDato(empty_aux, createDataNode(empty_aux->attName, empty_aux->tipo, empty));
+		insertarInicioDato(empty_aux, createDataNode(empty_aux->attName, empty_aux->tipo, empty_aux->calif));
 		int valor = 0;
 		empty_aux->sigTup->valInt = new int;
 		*empty_aux->sigTup->valInt = valor;
@@ -790,6 +790,14 @@ TipoRet dropCol(char *atr1, char *atr2, Table db)
 }
 
 TipoRet selectWhere(char *nombreTabla1, char *condicion, char *nombreTabla2, Table &db){
+	//selectWhere(tabla1,,tabla2) -> manejar error, espacio o cadena erronea
+	
+	
+	if(!strcmp(nombreTabla2,"")){
+		strcpy(nombreTabla2,condicion);
+		strcpy(condicion,"");
+	}
+	
 	char delim[] = "=<>";
 	char *copia = new char[100];
 	strcpy(copia, condicion);
@@ -801,6 +809,7 @@ TipoRet selectWhere(char *nombreTabla1, char *condicion, char *nombreTabla2, Tab
 	{
 		while (nuev)
 		{
+			cout<<"ENTRO"<<endl;
 			strcpy(matrizVals[i], nuev);
 			nuev = strtok(NULL, delim);
 			i++;
@@ -814,6 +823,11 @@ TipoRet selectWhere(char *nombreTabla1, char *condicion, char *nombreTabla2, Tab
 	int valor;
 	valor = strtol(matrizVals[1], NULL, 10);
 	valor_int = &valor;
+	
+	if(!strcmp(matrizVals[1],"") && strcmp(condicion,"")){
+		cout<<"Condicion erronea"<<endl;
+		return ERROR;
+	}
 	
 	Table aux = db, aux2 = db;
 	if (!checkName(aux, nombreTabla2))
@@ -835,9 +849,17 @@ TipoRet selectWhere(char *nombreTabla1, char *condicion, char *nombreTabla2, Tab
 			<< endl;
 		return ERROR;
 	}
+	
 	Dato pointer_aux = aux->pointer;
 	
 	insertar(db, createTableNode(nombreTabla2));
+	
+	if (!strcmp(condicion,""))
+	{
+		cout<<"if";
+		CopyAllTuplas(aux->pointer, nombreTabla2, db);
+		return OK;
+	}
 	
 	while (pointer_aux && strcmp(pointer_aux->attName, matrizVals[0]) != 0)
 		pointer_aux = pointer_aux->sigCol;

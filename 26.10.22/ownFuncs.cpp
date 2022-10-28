@@ -252,6 +252,19 @@ void deleteAllTuplas(Dato &pointer)
 	}
 	deleteWholeTupla(aux);
 }
+void CopyAllTuplas(Dato &pointer, char *nombreTabla2, Table db)
+{
+	Dato aux = pointer->sigTup;
+	while (aux->sigTup)
+	{
+		aux = aux->sigTup;
+		
+		CopyWholeTupla(aux, nombreTabla2, db);
+	}
+	CopyWholeTupla(aux, nombreTabla2, db);
+	
+	return;
+}
 
 void deleteWholeTupla(Dato &pointer)
 {
@@ -384,7 +397,7 @@ void CopyWholeTupla(Dato &pointer, char *nombreTabla2, Table &db)
 			valores=strcat(valores, aux->valChar);
 			columnas=strcat(columnas, aux->attName);
 			
-			aux->calif = "any";
+			/*aux->calif = "any";*/
 			
 			
 			checkNameP(aux2, aux_T, nombreTabla2);

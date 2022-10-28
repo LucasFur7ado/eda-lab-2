@@ -14,6 +14,7 @@ void orderTable(Dato &, char [50][100], int);
 void searchCondition(Dato &, char *, int *, char *);
 void searchCondition_selectWhere(Dato &, char *, int *, char *, char*, Table &);
 void CopyWholeTupla(Dato &, char*, Table &);	
+void CopyAllTuplas(Dato &, char*, Table);
 
 bool thereIsPk(Dato);
 bool alreadyColumn(Dato, char *);
