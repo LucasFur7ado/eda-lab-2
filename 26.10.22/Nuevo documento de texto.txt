@@ -6,7 +6,7 @@ insertInto(hola,nombre:edad:dire,pepe:20:asd
 insertInto(hola,nombre:edad:dire,juan:45:asdd
 insertInto(hola,nombre:edad:dire,juan:20:afdfs
 insertInto(hola,nombre,julio
-selectWhere(hola,nombre=juan,hola2
+selectWhere(hola,,hola2
 printmetadata(hola
 printmetadata(hola2
 printdatatable(hola
