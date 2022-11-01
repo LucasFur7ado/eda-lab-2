@@ -1,0 +1,33 @@
+createTable(hola
+addCol(hola,nombre,string,primary key
+addCol(hola,edad,integer,any
+addCol(hola,dire,string,any
+addCol(hola,ci,integer,any
+addCol(hola,sexo,integer,any
+insertInto(hola,nombre:edad:dire,pepe:20:asd
+insertInto(hola,nombre:edad:dire,juan:45:asdd
+insertInto(hola,nombre:edad:dire,juan:20:afdfs
+insertInto(hola,nombre:edad:dire:ci,juan:20:afdfs:578432
+insertInto(hola,nombre:edad:dire:ci,julian:20:afdfs:578432
+printmetadata(hola
+printmetadata(hola2
+printdatatable(hola
+printdatatable(hola2
+
+createTable(hola
+addCol(hola,edad,integer,primary key
+insertInto(hola,edad,200
+selectWhere(hola,edad=200,hola2
+printmetadata(hola
+printmetadata(hola2
+printdatatable(hola
+printdatatable(hola2
+
+createTable(hola
+createTable(hola2
+addCol(hola,ci,integer,primary key
+addCol(hola,edad,integer,any
+addCol(hola,nombre,integer,any
+addCol(hola2,ci,integer,primary key
+addCol(hola2,edad,integer,any
+join(hola,hola2,hola3
