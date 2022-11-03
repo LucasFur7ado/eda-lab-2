@@ -131,8 +131,6 @@ void swap(Dato &aux)
 
 char validateEntry(Dato pointer, char args[50][100], char vals[50][100], int cont)
 {
-	// FUNCION EN PROCESO
-	
 	Dato aux = pointer, aux2;
 	bool flag0 = true, flag1;
 	int pos;
@@ -149,7 +147,7 @@ char validateEntry(Dato pointer, char args[50][100], char vals[50][100], int con
 					flag0 = true;
 			}
 				aux2 = aux->sigTup;
-				while (aux2)
+				while (aux2 && flag0)
 				{
 					if (!strcmp(aux2->tipo, "integer"))
 					{
@@ -178,6 +176,7 @@ char validateEntry(Dato pointer, char args[50][100], char vals[50][100], int con
 					aux2 = aux2->sigTup;
 				}
 		}
+		
 		if (!strcmp(aux->calif, "not empty"))
 		{
 			for (int i = 0; i < cont; i++)
@@ -460,81 +459,224 @@ void CopyWholeTupla(Dato &pointer, char *nombreTabla2, Table &db)
 
 
 
-//void CopyWholeTupla_join(Dato &pointer, char *nombreTabla3, Table &db)
-//{
-//	
-//	Table aux_T = db, aux2 = db;
-//	int cont=0;
-//	char *valores;
-//	char *columnas;
-//	char *valor_entero;
-//	Dato aux = pointer;
-//	valores = new char[100];
-//	valor_entero = new char[100];
-//	columnas = new char[100];
-//	
-//	//	aux=aux->antTup;
-//	//	cout<<"caf"<<aux->calif;
-//	while (aux->sigCol)
-//		aux = aux->sigCol;
-//	
-//	
-//	while (aux->antCol)
-//	{
-//		
-//		if(cont>0){
-//			valores=strcat(valores, ":");
-//			columnas=strcat(columnas, ":");
-//		}
-//		
-//		if(!strcmp(aux->tipo, "integer")){
-//			sprintf(valor_entero, "%d", *aux->valInt);
-//			valores=strcat(valores, valor_entero);
-//		}
-//		else
-//				   valores=strcat(valores, aux->valChar);
-//		
-//		columnas=strcat(columnas, aux->attName);
-//		
-//		/*aux->calif = "any";*/
-//		
-//		
-//		checkNameP(aux2, aux_T, nombreTabla2);
-//		
-//		if (!alreadyColumn(aux_T->pointer, aux->attName)){
-//			addCol(nombreTabla2, aux->attName, aux->tipo, aux->calif, db);
-//		}
-//		aux=aux->antCol;
-//		
-//		cont++;
-//	}
-//	
-//	valores=strcat(valores, ":");
-//	columnas=strcat(columnas, ":");
-//	
-//	if(!strcmp(aux->tipo, "integer")){
-//		sprintf(valor_entero, "%d", *aux->valInt);
-//		valores=strcat(valores, valor_entero);
-//	}
-//	else
-//			   valores=strcat(valores, aux->valChar);
-//	
-//	columnas=strcat(columnas, aux->attName);
-//	
-//	checkNameP(aux2, aux_T, nombreTabla2);
-//	
-//	if (!alreadyColumn(aux_T->pointer, aux->attName)){
-//		addCol(nombreTabla2, aux->attName, aux->tipo, aux->calif, db);
-//	}
-//	aux=aux->antCol;
-//	
-//	
-//	insertInto(nombreTabla2, columnas, valores, db);
-//	
-//	return;
-//	
-//}
+void CopyWholeTupla_join(Dato aux, Dato aux_2, char *nombreTabla3, Table &db)
+{
+	
+	Table aux_T = db, aux2 = db;
+	int cont=0;
+	char *valores;
+	char *columnas;
+	char *valor_entero;
+	char *valor_entero2;
+	valores = new char[100];
+	valor_entero = new char[100];
+	valor_entero2 = new char[100];
+	columnas = new char[100];
+	
+//	aux=aux->sigTup;
+//	aux_2=aux_2->sigTup;
+		
+	
+	while (aux->sigCol)
+		aux = aux->sigCol;
+	
+	while (aux_2->sigCol)
+		aux_2 = aux_2->sigCol;
+	
+	cout<<"llego1"<<endl;
+	while (aux->antCol || aux_2->antCol)
+	{
+		if(cont>0){
+			valores=strcat(valores, ":");
+			columnas=strcat(columnas, ":");
+		}
+		cout<<"llego2"<<endl;
+		if(aux){
+		if(!strcmp(aux->tipo, "integer")){
+			sprintf(valor_entero, "%d", *aux->valInt);
+			valores=strcat(valores, valor_entero);
+		}
+		else
+			valores=strcat(valores, aux->valChar);
+		cout<<"llego3"<<endl;
+		columnas=strcat(columnas, aux->attName);
+		}
+		if(aux_2){
+			if(!strcmp(aux_2->tipo, "integer")){
+				sprintf(valor_entero2, "%d", *aux_2->valInt);
+				valores=strcat(valores, valor_entero2);
+			}
+			else
+				valores=strcat(valores, aux->valChar);
+			
+			columnas=strcat(columnas, aux->attName);
+		}
+		
+		cout<<"llego4"<<endl;
+		checkNameP(aux2, aux_T, nombreTabla3);
+		
+		if (!alreadyColumn(aux_T->pointer, aux->attName)){
+			addCol(nombreTabla3, aux->attName, aux->tipo, aux->calif, db);
+			/*addCol(nombreTabla3, aux_2->attName, aux_2->tipo, aux_2->calif, db); //ESTO DARÁ PROBLEMA*/
+		}
+		
+		aux=aux->antCol;
+		aux_2=aux_2->antCol;
+		
+		cout<<"llego5"<<endl;
+		
+		cont++;
+	}
+	
+	
+	valores=strcat(valores, ":");
+	columnas=strcat(columnas, ":");
+	
+	
+	
+	cout<<"llego6"<<endl;
+	
+	if(aux){
+		if(!strcmp(aux->tipo, "integer")){
+			sprintf(valor_entero, "%d", *aux->valInt);
+			valores=strcat(valores, valor_entero);
+		}
+		else
+			valores=strcat(valores, aux->valChar);
+		
+		columnas=strcat(columnas, aux->attName);
+	}
+	if(aux_2){
+		if(!strcmp(aux_2->tipo, "integer")){
+			sprintf(valor_entero2, "%d", *aux_2->valInt);
+			valores=strcat(valores, valor_entero2);
+		}
+		else
+			valores=strcat(valores, aux->valChar);
+		
+		columnas=strcat(columnas, aux->attName);
+	}
+	cout<<"llego7"<<endl;
+	
+	checkNameP(aux2, aux_T, nombreTabla3);
+	
+	if (!alreadyColumn(aux_T->pointer, aux->attName)){
+		addCol(nombreTabla3, aux->attName, aux->tipo, aux->calif, db);
+		/*addCol(nombreTabla3, aux_2->attName, aux_2->tipo, aux_2->calif, db); //ESTO DARÁ PROBLEMA*/
+	}
+	
+	aux=aux->antCol;
+	aux_2=aux_2->antCol;
+	
 
+	
+	insertInto(nombreTabla3, columnas, valores, db);
+	
+	return;
+	
+}
+TipoRet dropColNMW(char *atr1, char *atr2, Table db)
+{
+	Table aux = db, aux2 = db;
+	if (checkName(aux, atr1))
+	{
+		cout << "Parece que la tabla no existe." << endl;
+		return ERROR;
+	}
+	else
+				  checkNameP(aux2, aux, atr1);
+	if (!aux)
+	{
+		cout << endl
+			<< '\t' << "Parece que la tabla no existe." << endl
+			<< endl;
+		return ERROR;
+	}
+	Dato pointer_aux;
+	pointer_aux = aux->pointer;
+	while (pointer_aux && strcmp(pointer_aux->attName, atr2) != 0)
+		pointer_aux = pointer_aux->sigCol;
+	if (!pointer_aux)
+	{
+		cout << endl
+			<< '\t' << "Parece que la columna no existe." << endl
+			<< endl;
+		return ERROR;
+	}
+	else if (!pointer_aux->sigCol && !pointer_aux->antCol)
+	{
+		while (pointer_aux)
+		{
+			Dato aux = pointer_aux;
+			pointer_aux = pointer_aux->sigTup;
+			delete aux;
+		}
+		aux->pointer = NULL;
+		return OK;
+	}
+	else if (!pointer_aux->antCol && pointer_aux->sigCol)
+	{
+		Dato auxiliar = pointer_aux;
+		pointer_aux = pointer_aux->sigCol;
+		Dato aux2;
+		aux->pointer = pointer_aux;
+		while (auxiliar)
+		{
+			aux2 = auxiliar;
+			auxiliar = auxiliar->sigTup;
+			delete aux2;
+		}
+		aux2 = NULL;
+		while (pointer_aux)
+		{
+			pointer_aux->antCol = NULL;
+			pointer_aux = pointer_aux->sigTup;
+		}
+		return OK;
+	}
+	else if (pointer_aux->antCol && !pointer_aux->sigCol)
+	{
+		Dato auxiliar = pointer_aux;
+		pointer_aux = pointer_aux->antCol;
+		Dato aux2;
+		while (auxiliar)
+		{
+			aux2 = auxiliar;
+			auxiliar = auxiliar->sigTup;
+			delete aux2;
+		}
+		aux2 = NULL;
+		while (pointer_aux)
+		{
+			pointer_aux->sigCol = NULL;
+			pointer_aux = pointer_aux->sigTup;
+		}
+		return OK;
+	}
+	else if (pointer_aux->antCol && pointer_aux->sigCol)
+	{
+		Dato auxiliar_ant = pointer_aux->antCol;
+		Dato auxiliar_sig = pointer_aux->sigCol;
+		
+		while (auxiliar_ant)
+		{
+			auxiliar_ant->sigCol = auxiliar_sig;
+			auxiliar_sig->antCol = auxiliar_ant;
+			
+			auxiliar_ant = auxiliar_ant->sigTup;
+			auxiliar_sig = auxiliar_sig->sigTup;
+		}
+		Dato aux22;
+		while (pointer_aux)
+		{
+			aux22 = pointer_aux;
+			pointer_aux = pointer_aux->sigTup;
+			delete aux22;
+		}
+		return OK;
+	}
+	return OK;
+}
 
 void credits()
 {

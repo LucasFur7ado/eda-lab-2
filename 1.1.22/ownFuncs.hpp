@@ -15,7 +15,8 @@ void searchCondition(Dato &, char *, int *, char *);
 void searchCondition_selectWhere(Dato &, char *, int *, char *, char*, Table &);
 void CopyWholeTupla(Dato &, char*, Table &);	
 void CopyAllTuplas(Dato &, char*, Table);
-void CopyWholeTupla_join(Dato &, char *, Table &);
+void CopyWholeTupla_join(Dato , Dato , char *, Table &);
+TipoRet dropColNMW(char *, char *, Table);
 
 bool thereIsPk(Dato);
 bool alreadyColumn(Dato, char *);
