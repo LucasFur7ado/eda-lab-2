@@ -88,3 +88,25 @@ void insertarInicioCol(Dato &col, Dato newCol)
 	}
 }
 
+void borrar(Table &arbol)
+{
+	if(arbol==NULL) return;
+		else
+		{
+			Table p = arbol;
+			arbol = unirABB(arbol->izq, arbol->der);
+			delete p;
+		}
+}
+
+Table unirABB(Table izq, Table der)
+{
+	if(izq==NULL) return der;
+	if(der==NULL) return izq;
+	Table centro = unirABB(izq->der, der->izq);
+	izq->der = centro;
+	der->izq = izq;
+	return der;
+}
+
+

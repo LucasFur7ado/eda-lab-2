@@ -12,6 +12,109 @@ using namespace std;
 
 // FUNCIONES PROPIAS
 
+TipoRet dropColNMW(char *atr1, char *atr2, Table db)
+{
+	Table aux = db, aux2 = db;
+	if (checkName(aux, atr1))
+	{
+		cout << "Parece que la tabla no existe." << endl;
+		return ERROR;
+	}
+	else
+		checkNameP(aux2, aux, atr1);
+	if (!aux)
+	{
+		cout << endl
+			 << '\t' << "Parece que la tabla no existe." << endl
+			 << endl;
+		return ERROR;
+	}
+	Dato pointer_aux;
+	pointer_aux = aux->pointer;
+	while (pointer_aux && strcmp(pointer_aux->attName, atr2) != 0)
+		pointer_aux = pointer_aux->sigCol;
+	if (!pointer_aux)
+	{
+		cout << endl
+			 << '\t' << "Parece que la columna no existe." << endl
+			 << endl;
+		return ERROR;
+	}
+	else if (!pointer_aux->sigCol && !pointer_aux->antCol)
+	{
+		while (pointer_aux)
+		{
+			Dato aux = pointer_aux;
+			pointer_aux = pointer_aux->sigTup;
+			delete aux;
+		}
+		aux->pointer = NULL;
+		return OK;
+	}
+	else if (!pointer_aux->antCol && pointer_aux->sigCol)
+	{
+		Dato auxiliar = pointer_aux;
+		pointer_aux = pointer_aux->sigCol;
+		Dato aux2;
+		aux->pointer = pointer_aux;
+		while (auxiliar)
+		{
+			aux2 = auxiliar;
+			auxiliar = auxiliar->sigTup;
+			delete aux2;
+		}
+		aux2 = NULL;
+		while (pointer_aux)
+		{
+			pointer_aux->antCol = NULL;
+			pointer_aux = pointer_aux->sigTup;
+		}
+		return OK;
+	}
+	else if (pointer_aux->antCol && !pointer_aux->sigCol)
+	{
+		Dato auxiliar = pointer_aux;
+		pointer_aux = pointer_aux->antCol;
+		Dato aux2;
+		while (auxiliar)
+		{
+			aux2 = auxiliar;
+			auxiliar = auxiliar->sigTup;
+			delete aux2;
+		}
+		aux2 = NULL;
+		while (pointer_aux)
+		{
+			pointer_aux->sigCol = NULL;
+			pointer_aux = pointer_aux->sigTup;
+		}
+		return OK;
+	}
+	else if (pointer_aux->antCol && pointer_aux->sigCol)
+	{
+		Dato auxiliar_ant = pointer_aux->antCol;
+		Dato auxiliar_sig = pointer_aux->sigCol;
+
+		while (auxiliar_ant)
+		{
+			auxiliar_ant->sigCol = auxiliar_sig;
+			auxiliar_sig->antCol = auxiliar_ant;
+
+			auxiliar_ant = auxiliar_ant->sigTup;
+			auxiliar_sig = auxiliar_sig->sigTup;
+		}
+		Dato aux22;
+		while (pointer_aux)
+		{
+			aux22 = pointer_aux;
+			pointer_aux = pointer_aux->sigTup;
+			delete aux22;
+		}
+		return OK;
+	}
+	return OK;
+}
+
 void fillAtr(char *atr, int i, int numAtr, char *nuevo)
 {
 	if (i == numAtr)
@@ -24,7 +127,7 @@ bool thereIsPk(Dato pointer)
 	Dato aux = pointer;
 	while (aux)
 	{
-		if (!strcmp(aux->calif, "PRIMARY_KEY"))
+		if (!strcmp(aux->calif, "primary key"))
 			return true;
 		aux = aux->sigCol;
 	}
@@ -33,75 +136,92 @@ bool thereIsPk(Dato pointer)
 
 void orderTable(Dato &pointer, char column[50][100], int cont)
 {
+
 	Dato aux = pointer, aux2, aux3;
 	bool flag = true;
 	int val1, val2;
-	for(int f = 0; f < 2; f++){
-	if (!cont)
+	for (int f = 0; f < 2; f++)
 	{
-		while (aux && strcmp(aux->calif, "PRIMARY_KEY") != 0)
-			aux = aux->sigCol;
-	}
-	else
-	{
-		while (strcmp(aux->attName, column[0]) != 0)
-			aux = aux->sigCol;
-	}
-	aux = aux->sigTup;
-	aux2 = aux;
-	
-	while (flag)
-	{
-		flag = false;
-		cout<<"WHILE"<<endl;
-		aux = aux2;
-		while (aux && aux->sigTup)
+		aux = pointer;
+
+		if (!cont)
 		{
-			if (aux->valInt)
-				val1 = *aux->valInt;
-			else
-				val1 = 0;
-			if (aux->sigTup->valInt)
-				val2 = *aux->sigTup->valInt;
-			else
-				val2 = 0;
-			if (((!strcmp(aux->tipo, "integer") && val1 >= val2) || 
-				(!strcmp(aux->tipo, "character") && aux->valChar[0] >= aux->sigTup->valChar[0])))
-			{
-				flag = true;
-				while (aux->sigTup && ((!strcmp(aux->tipo, "integer") && val1 >= val2) 
-					   || (!strcmp(aux->tipo, "character") && aux->valChar[0] >= aux->sigTup->valChar[0])))
-				{
-					swap(aux);
-					aux3 = aux;
-					if (aux->sigCol || aux->antCol)
-					{
-						
-						while (aux->sigCol)
-							aux = aux->sigCol;
-						while (aux->antCol)
-						{
-							if (aux != aux3)
-							{
-								swap(aux);
-								aux = aux->antCol;
-							}
-							else
-								aux = aux->antCol;
-						}
-						if (aux != aux3)
-							swap(aux);
-						aux = aux3;
-					}
-					if(aux && aux->sigTup && !strcmp(aux->tipo, "integer")){
-						val1 = *aux->valInt;
-						val2 = *aux->sigTup->valInt;
-					}
-				}
-			}else 
-				aux = aux->sigTup;
+			while (aux && strcmp(aux->calif, "primary key") != 0)
+				aux = aux->sigCol;
 		}
-	}
+		else
+		{
+			while (strcmp(aux->attName, column[0]) != 0)
+				aux = aux->sigCol;
+		}
+		aux = aux->sigTup;
+		aux2 = aux;
+		int i;
+		for (int f = 0; f < 20; f++)
+		{
+			while (flag)
+			{
+				flag = false;
+				cout << "WHILE" << endl;
+				aux = aux2;
+				if (aux->sigTup == NULL)
+				{
+					return;
+				}
+				while (aux && aux->sigTup)
+				{
+					cout << "while 1" << endl;
+					if (aux->valInt)
+						val1 = *aux->valInt;
+					else
+						val1 = 0;
+					if (aux->sigTup->valInt)
+						val2 = *aux->sigTup->valInt;
+					else
+						val2 = 0;
+
+					cout << "asas" << endl;
+					if (((!strcmp(aux->tipo, "integer") && val1 >= val2) ||
+						 (!strcmp(aux->tipo, "character") && aux->valChar[0] >= aux->sigTup->valChar[0])))
+					{
+
+						cout << "TTTT" << endl;
+						flag = true;
+						while (aux->sigTup && ((!strcmp(aux->tipo, "integer") && val1 >= val2) || (!strcmp(aux->tipo, "character") && aux->valChar[0] >= aux->sigTup->valChar[0])))
+						{
+							swap(aux);
+							aux3 = aux;
+							if (aux->sigCol || aux->antCol)
+							{
+
+								while (aux->sigCol)
+									aux = aux->sigCol;
+								while (aux->antCol)
+								{
+									if (aux != aux3)
+									{
+										swap(aux);
+										aux = aux->antCol;
+									}
+									else
+										aux = aux->antCol;
+								}
+								if (aux != aux3)
+									swap(aux);
+								aux = aux3;
+							}
+							if (aux && aux->sigTup && !strcmp(aux->tipo, "integer"))
+							{
+								val1 = *aux->valInt;
+								val2 = *aux->sigTup->valInt;
+							}
+						}
+					}
+					else
+						aux = aux->sigTup;
+				}
+			}
+		}
 	}
 }
 
@@ -122,54 +242,53 @@ void swap(Dato &aux)
 
 char validateEntry(Dato pointer, char args[50][100], char vals[50][100], int cont)
 {
-	// FUNCION EN PROCESO
-	
 	Dato aux = pointer, aux2;
 	bool flag0 = true, flag1;
 	int pos;
 	while (aux)
 	{
 		flag1 = false;
-		if (!strcmp(aux->calif, "PRIMARY_KEY"))
+		if (!strcmp(aux->calif, "primary key"))
 		{
 			flag0 = false;
 			for (int i = 0; i < cont; i++)
 				if (!strcmp(args[i], aux->attName))
-			{
+				{
 					pos = cont;
 					flag0 = true;
-			}
-				aux2 = aux->sigTup;
-				while (aux2)
-				{
-					if (!strcmp(aux2->tipo, "integer"))
-					{
-						int *valor_int;
-						int valor;
-						valor = strtol(vals[pos - 1], NULL, 10);
-						valor_int = &valor;
-						if (*aux2->valInt == *valor_int)
-						{
-							cout << endl
-								<< '\t' << "Ya existe una tupla con esa clave primaria." << endl
-								<< endl;
-							return false;
-						}
-					}
-					else
-					{
-						if (!strcmp(aux2->valChar, vals[pos - 1]))
-						{
-							cout << endl
-								<< '\t' << "Ya existe una tupla con esa clave primaria." << endl
-								<< endl;
-							return false;
-						}
-					}
-					aux2 = aux2->sigTup;
 				}
+			aux2 = aux->sigTup;
+			while (aux2 && flag0)
+			{
+				if (!strcmp(aux2->tipo, "integer"))
+				{
+					int *valor_int;
+					int valor;
+					valor = strtol(vals[pos - 1], NULL, 10);
+					valor_int = &valor;
+					if (*aux2->valInt == *valor_int)
+					{
+						cout << endl
+							 << '\t' << "Ya existe una tupla con esa clave primaria." << endl
+							 << endl;
+						return false;
+					}
+				}
+				else
+				{
+					if (!strcmp(aux2->valChar, vals[pos - 1]))
+					{
+						cout << endl
+							 << '\t' << "Ya existe una tupla con esa clave primaria." << endl
+							 << endl;
+						return false;
+					}
+				}
+				aux2 = aux2->sigTup;
+			}
 		}
-		if (!strcmp(aux->calif, "NOT_EMPTY"))
+		cout << "BEFORE IF2" << endl;
+		if (!strcmp(aux->calif, "not empty"))
 		{
 			for (int i = 0; i < cont; i++)
 			{
@@ -179,9 +298,9 @@ char validateEntry(Dato pointer, char args[50][100], char vals[50][100], int con
 			if (!flag1)
 			{
 				cout << endl
-					<< '\t' << "Hay columnas que no admiten valores nulos." << endl;
+					 << '\t' << "Hay columnas que no admiten valores nulos." << endl;
 				cout << '\t' << ">> printMetaData( nombreTabla ) para ver detalles." << endl
-					<< endl;
+					 << endl;
 				return false;
 			}
 		}
@@ -190,8 +309,8 @@ char validateEntry(Dato pointer, char args[50][100], char vals[50][100], int con
 	if (!flag0)
 	{
 		cout << endl
-			<< '\t' << "Debes ingresar una clave primaria." << endl
-			<< endl;
+			 << '\t' << "Debes ingresar una clave primaria." << endl
+			 << endl;
 		return false;
 	}
 	return true;
@@ -215,8 +334,8 @@ bool alreadyColumn(Dato pointer, char *colName)
 void help()
 {
 	cout << endl
-		<< '\t' << "Comandos disponibles: " << endl
-		<< endl;
+		 << '\t' << "Comandos disponibles: " << endl
+		 << endl;
 	cout << '\t' << "showTables()" << endl;
 	cout << '\t' << "dropTable(nombreTabla)" << endl;
 	cout << '\t' << "createTable(nombreTabla)" << endl;
@@ -226,7 +345,7 @@ void help()
 	cout << '\t' << "deleteTupla(nombreTabla,columna=valor)" << endl;
 	cout << '\t' << "insertInto(nombreTabla,columna1:columna2,valor1:valor2)" << endl;
 	cout << '\t' << "addCol(nombreTabla,nombreColumna,tipoColumna,calificador)" << endl
-		<< endl;
+		 << endl;
 }
 
 void deleteAllTuplas(Dato &pointer)
@@ -274,15 +393,21 @@ void deleteWholeTupla(Dato &pointer)
 
 void searchCondition(Dato &pointer_aux, char *valor_char, int *valor_int, char *operand)
 {
+	if (!pointer_aux->sigTup)
+	{
+		cout << "La columna esta vacia" << endl;
+		return;
+	}
+
 	Dato aux = pointer_aux->sigTup, aux2;
 	while (aux->sigTup)
 	{
 		if (((!strcmp(aux->tipo, "character") && strcmp(aux->valChar, valor_char) != 0 || !strcmp(aux->tipo, "integer") && (*aux->valInt != *valor_int)) && !strcmp(operand, "<>")) ||
-			
+
 			((!strcmp(aux->tipo, "character") && !strcmp(aux->valChar, valor_char) || !strcmp(aux->tipo, "integer") && (*aux->valInt == *valor_int)) && !strcmp(operand, "=")) ||
-			
+
 			((!strcmp(aux->tipo, "character") && strcmp(aux->valChar, valor_char) < 0 || !strcmp(aux->tipo, "integer") && (*aux->valInt < *valor_int)) && !strcmp(operand, "<")) ||
-			
+
 			((!strcmp(aux->tipo, "character") && strcmp(aux->valChar, valor_char) > 0 || !strcmp(aux->tipo, "integer") && (*aux->valInt > *valor_int)) && !strcmp(operand, ">")))
 		{
 			aux = aux->sigTup;
@@ -292,19 +417,115 @@ void searchCondition(Dato &pointer_aux, char *valor_char, int *valor_int, char *
 			aux = aux->sigTup;
 	}
 	if (((!strcmp(aux->tipo, "character") && strcmp(aux->valChar, valor_char) != 0 || !strcmp(aux->tipo, "integer") && (*aux->valInt != *valor_int)) && !strcmp(operand, "<>")) ||
-		
+
 		((!strcmp(aux->tipo, "character") && !strcmp(aux->valChar, valor_char) || !strcmp(aux->tipo, "integer") && (*aux->valInt == *valor_int)) && !strcmp(operand, "=")) ||
-		
+
 		((!strcmp(aux->tipo, "character") && strcmp(aux->valChar, valor_char) < 0 || !strcmp(aux->tipo, "integer") && (*aux->valInt < *valor_int)) && !strcmp(operand, "<")) ||
-		
+
 		((!strcmp(aux->tipo, "character") && strcmp(aux->valChar, valor_char) > 0 || !strcmp(aux->tipo, "integer") && (*aux->valInt > *valor_int)) && !strcmp(operand, ">")))
 		deleteWholeTupla(aux);
+}
+
+void searchCondition_selectWhere(Dato &pointer_aux, char *valor_char, int *valor_int, char *operand, char *nombreTabla2, Table &db)
+{
+	if (!pointer_aux->sigTup)
+	{
+		cout << "La columna esta vacia" << endl;
+		return;
+	}
+
+	Dato aux = pointer_aux->sigTup, aux2;
+	while (aux->sigTup)
+	{
+		cout << "CALIFFF" << aux->calif << endl;
+		if (((!strcmp(aux->tipo, "character") && strcmp(aux->valChar, valor_char) != 0 || !strcmp(aux->tipo, "integer") && (*aux->valInt != *valor_int)) && !strcmp(operand, "<>")) ||
+
+			((!strcmp(aux->tipo, "character") && !strcmp(aux->valChar, valor_char) || !strcmp(aux->tipo, "integer") && (*aux->valInt == *valor_int)) && !strcmp(operand, "=")) ||
+
+			((!strcmp(aux->tipo, "character") && strcmp(aux->valChar, valor_char) < 0 || !strcmp(aux->tipo, "integer") && (*aux->valInt < *valor_int)) && !strcmp(operand, "<")) ||
+
+			((!strcmp(aux->tipo, "character") && strcmp(aux->valChar, valor_char) > 0 || !strcmp(aux->tipo, "integer") && (*aux->valInt > *valor_int)) && !strcmp(operand, ">")))
+		{
+			//			aux = aux->sigTup;
+			//			deleteWholeTupla(aux->antTup);
+			CopyWholeTupla(aux, nombreTabla2, db);
+			aux = aux->sigTup;
+		}
+		else
+			aux = aux->sigTup;
+	}
+	if (((!strcmp(aux->tipo, "character") && strcmp(aux->valChar, valor_char) != 0 || !strcmp(aux->tipo, "integer") && (*aux->valInt != *valor_int)) && !strcmp(operand, "<>")) ||
+
+		((!strcmp(aux->tipo, "character") && !strcmp(aux->valChar, valor_char) || !strcmp(aux->tipo, "integer") && (*aux->valInt == *valor_int)) && !strcmp(operand, "=")) ||
+
+		((!strcmp(aux->tipo, "character") && strcmp(aux->valChar, valor_char) < 0 || !strcmp(aux->tipo, "integer") && (*aux->valInt < *valor_int)) && !strcmp(operand, "<")) ||
+
+		((!strcmp(aux->tipo, "character") && strcmp(aux->valChar, valor_char) > 0 || !strcmp(aux->tipo, "integer") && (*aux->valInt > *valor_int)) && !strcmp(operand, ">")))
+		CopyWholeTupla(aux, nombreTabla2, db);
+	aux = aux->sigTup;
+}
+
+void CopyWholeTupla(Dato &pointer, char *nombreTabla2, Table &db)
+{
+	Table aux_T = db, aux2 = db;
+	int cont = 0;
+	char *valores;
+	char *columnas;
+	Dato aux = pointer;
+	valores = new char[100];
+	columnas = new char[100];
+
+	//	aux=aux->antTup;
+	//	cout<<"caf"<<aux->calif;
+	while (aux->sigCol)
+		aux = aux->sigCol;
+
+	while (aux->antCol)
+	{
+		if (cont > 0)
+		{
+			valores = strcat(valores, ":");
+			columnas = strcat(columnas, ":");
+		}
+
+		cout << "CALIF" << aux->calif << endl;
+		valores = strcat(valores, aux->valChar);
+		columnas = strcat(columnas, aux->attName);
+
+		aux->calif = "any";
+
+		checkNameP(aux2, aux_T, nombreTabla2);
+
+		if (!alreadyColumn(aux_T->pointer, aux->attName))
+		{
+			addCol(nombreTabla2, aux->attName, aux->tipo, aux->calif, db);
+		}
+		aux = aux->antCol;
+
+		cont++;
+	}
+
+	valores = strcat(valores, ":");
+	columnas = strcat(columnas, ":");
+	valores = strcat(valores, aux->valChar);
+	columnas = strcat(columnas, aux->attName);
+
+	aux->calif = "any";
+	checkNameP(aux2, aux_T, nombreTabla2);
+
+	if (!alreadyColumn(aux_T->pointer, aux->attName))
+	{
+		addCol(nombreTabla2, aux->attName, aux->tipo, aux->calif, db);
+	}
+	aux = aux->antCol;
+
+	insertInto(nombreTabla2, columnas, valores, db);
 }
 
 void credits()
 {
 	cout << endl
-		<< endl;
+		 << endl;
 	cout << '\t' << ":::::.'::::::::::::::::" << endl;
 	cout << '\t' << ":::::   '::::::::::::::" << endl;
 	cout << '\t' << ":::'   .:::::::::::::::" << endl;
@@ -323,9 +544,9 @@ void credits()
 	cout << '\t' << "::'           :::::::::" << endl;
 	cout << '\t' << "::            :::::::::" << endl;
 	cout << '\t' << ":.            :::::::::" << endl
-		<< endl;
+		 << endl;
 	cout << '\t' << "developed by" << endl;
 	cout << '\t' << "Lucas Furtado" << endl;
 	cout << '\t' << "& Santiago Perron" << endl
-		<< endl;
+		 << endl;
 }

@@ -12,20 +12,22 @@ using namespace std;
 int main(int argc, char *argv[])
 {
 	Table db = NULL;
-	char comando[100] = {0}, delimitador[] = "(,) ",
+	char comando[100] = {0}, delimitador[] = "(,)",
 		*atr1, *atr2, *atr3, *atr4, *atr5;
 	
 	char helpComm[100] = "/help";
-	char addColComm[100] = "addCol";
-	char dropColComm[100] = "dropCol";
+	char addColComm[100] = "addcol";
+	char dropColComm[100] = "dropcol";
 	char creditsComm[100] = "/credits";
-	char createComm[100] = "createTable";
-	char dropTableComm[100] = "dropTable";
-	char insertIntoComm[100] = "insertInto";
-	char printTablesComm[100] = "printTables";
-	char deleteTuplaComm[100] = "deleteTupla";
-	char printMetadataComm[100] = "printMetadata";
-	char printDataTableComm[100] = "printDataTable";
+	char createComm[100] = "createtable";
+	char dropTableComm[100] = "droptable";
+	char insertIntoComm[100] = "insertinto";
+	char printTablesComm[100] = "printtables";
+	char deleteTuplaComm[100] = "deletetupla";
+	char printMetadataComm[100] = "printmetadata";
+	char printDataTableComm[100] = "printdatatable";
+	char selectWhereComm[100] = "selectwhere";
+	char selectComm[100] = "select";
 	
 	while (true)
 	{
@@ -42,13 +44,13 @@ int main(int argc, char *argv[])
 			atr4[l] = NULL;
 		}
 		cout << ">> ";
-		cin>> comando;
+	/*	cin>> comando;*/
 		
-		/*gets(comando);
+		gets(comando);
 		int largo = strlen(comando);
 		for (int letra = 0; letra < largo; ++letra)  
 			comando[letra] = tolower(comando[letra]); 
-		*/
+		
 		
 		char *nuevo = strtok(comando, delimitador);
 		nuevo = strtok(NULL, delimitador);
@@ -88,12 +90,14 @@ int main(int argc, char *argv[])
 			credits();
 		else if (!strcmp(comando, helpComm))
 			help();
+		else if (!strcmp(comando,selectWhereComm))
+				 selectWhere(atr1, atr2, atr3, db);
+		else if (!strcmp(comando,selectComm))
+				 select(atr1, atr2, atr3, db);
 		else
-		{
+		{	
 			cout << endl
 				<< '\t' << "No existe ese comando, /help para mas ayuda" << endl;
-			cout << '\t' << "Advertencia: evita utilizar espacios." << endl
-				<< endl;
 		}
 	}
 	return 0;

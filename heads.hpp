@@ -34,6 +34,8 @@ TipoRet dropCol(char *, char *, Table);
 TipoRet printMetadata(char *, Table);
 TipoRet createTable(char *, Table &);
 TipoRet dropTable(char *, Table &);
+TipoRet select(char *, char *, char *, Table);
+TipoRet selectWhere(char *, char *, char *, Table &);
 
 void insertar(Table &, Table);
 void printTables(Table);

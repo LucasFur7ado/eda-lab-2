@@ -1,0 +1,21 @@
+createTable(hola
+addCol(hola,nombre,string,primary key
+addCol(hola,edad,string,any
+addCol(hola,dire,string,any
+insertInto(hola,nombre:edad:dire,pepe:20:asd
+insertInto(hola,nombre:edad:dire,juan:45:asdd
+insertInto(hola,nombre:edad:dire,juan:20:afdfs
+selectWhere(hola,nombre=juan,hola2
+printmetadata(hola
+printmetadata(hola2
+printdatatable(hola
+printdatatable(hola2
+
+createTable(hola
+addCol(hola,edad,integer,primary key
+insertInto(hola,edad,200
+selectWhere(hola,edad=200,hola2
+printmetadata(hola
+printmetadata(hola2
+printdatatable(hola
+printdatatable(hola2
