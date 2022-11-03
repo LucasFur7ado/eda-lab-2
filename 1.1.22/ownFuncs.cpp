@@ -462,20 +462,22 @@ void CopyWholeTupla(Dato &pointer, char *nombreTabla2, Table &db)
 void CopyWholeTupla_join(Dato aux, Dato aux_2, char *nombreTabla3, Table &db)
 {
 	
+
+	
 	Table aux_T = db, aux2 = db;
 	int cont=0;
 	char *valores;
 	char *columnas;
+	char *eliminar;
 	char *valor_entero;
 	char *valor_entero2;
 	valores = new char[100];
 	valor_entero = new char[100];
 	valor_entero2 = new char[100];
+	eliminar = new char[100];
 	columnas = new char[100];
-	
-//	aux=aux->sigTup;
-//	aux_2=aux_2->sigTup;
-		
+	strcpy(eliminar, "eliminar");
+
 	
 	while (aux->sigCol)
 		aux = aux->sigCol;
@@ -483,92 +485,118 @@ void CopyWholeTupla_join(Dato aux, Dato aux_2, char *nombreTabla3, Table &db)
 	while (aux_2->sigCol)
 		aux_2 = aux_2->sigCol;
 	
-	cout<<"llego1"<<endl;
+	
 	while (aux->antCol || aux_2->antCol)
 	{
+		
+		
+		
 		if(cont>0){
 			valores=strcat(valores, ":");
 			columnas=strcat(columnas, ":");
 		}
-		cout<<"llego2"<<endl;
 		if(aux){
 		if(!strcmp(aux->tipo, "integer")){
 			sprintf(valor_entero, "%d", *aux->valInt);
-			valores=strcat(valores, valor_entero);
+			strcat(valores, valor_entero);
 		}
 		else
-			valores=strcat(valores, aux->valChar);
-		cout<<"llego3"<<endl;
-		columnas=strcat(columnas, aux->attName);
+			strcat(valores, aux->valChar);
+		
+		strcat(columnas, aux->attName);
 		}
+		//PUEDE OCURRIR ERROR AQUI
+		strcat(valores, ":");
+		strcat(columnas, ":");
+		
 		if(aux_2){
 			if(!strcmp(aux_2->tipo, "integer")){
 				sprintf(valor_entero2, "%d", *aux_2->valInt);
-				valores=strcat(valores, valor_entero2);
+				strcat(valores, valor_entero2);
 			}
 			else
-				valores=strcat(valores, aux->valChar);
+				strcat(valores, aux_2->valChar);
 			
-			columnas=strcat(columnas, aux->attName);
+			strcat(columnas, aux_2->attName);
 		}
 		
-		cout<<"llego4"<<endl;
+		
 		checkNameP(aux2, aux_T, nombreTabla3);
 		
-		if (!alreadyColumn(aux_T->pointer, aux->attName)){
-			addCol(nombreTabla3, aux->attName, aux->tipo, aux->calif, db);
-			/*addCol(nombreTabla3, aux_2->attName, aux_2->tipo, aux_2->calif, db); //ESTO DARÁ PROBLEMA*/
-		}
+
+			if(aux && !alreadyColumn(aux_T->pointer, aux->attName)){
+				addCol(nombreTabla3, aux->attName, aux->tipo, aux->calif, db);
+			}
+			if(aux_2 && !alreadyColumn(aux_T->pointer, aux_2->attName)){
+				if(strcmp(aux_2->calif,"primary key"))
+					addCol(nombreTabla3, aux_2->attName, aux_2->tipo, aux_2->calif, db);
+			}
 		
-		aux=aux->antCol;
-		aux_2=aux_2->antCol;
 		
-		cout<<"llego5"<<endl;
 		
+		
+		if(aux->antCol)
+			aux=aux->antCol;
+		if(aux_2->antCol)
+			aux_2=aux_2->antCol;
+		
+		
+		
+
 		cont++;
 	}
 	
 	
-	valores=strcat(valores, ":");
-	columnas=strcat(columnas, ":");
+	strcat(valores, ":");
+	strcat(columnas, ":");
 	
+	 
 	
-	
-	cout<<"llego6"<<endl;
 	
 	if(aux){
 		if(!strcmp(aux->tipo, "integer")){
 			sprintf(valor_entero, "%d", *aux->valInt);
-			valores=strcat(valores, valor_entero);
+			strcat(valores, valor_entero);
 		}
 		else
-			valores=strcat(valores, aux->valChar);
+			strcat(valores, aux->valChar);
 		
-		columnas=strcat(columnas, aux->attName);
+		strcat(columnas, aux->attName);
 	}
+	
+	//PUEDE OCURRIR ERROR AQUI
+	strcat(valores, ":");
+	strcat(columnas, ":");
+	
 	if(aux_2){
 		if(!strcmp(aux_2->tipo, "integer")){
 			sprintf(valor_entero2, "%d", *aux_2->valInt);
-			valores=strcat(valores, valor_entero2);
+			strcat(valores, valor_entero2);
 		}
 		else
-			valores=strcat(valores, aux->valChar);
+			strcat(valores, aux_2->valChar);
 		
-		columnas=strcat(columnas, aux->attName);
+		strcat(columnas, aux_2->attName);
 	}
-	cout<<"llego7"<<endl;
+	
 	
 	checkNameP(aux2, aux_T, nombreTabla3);
 	
-	if (!alreadyColumn(aux_T->pointer, aux->attName)){
+	if(aux && !alreadyColumn(aux_T->pointer, aux->attName)){
 		addCol(nombreTabla3, aux->attName, aux->tipo, aux->calif, db);
-		/*addCol(nombreTabla3, aux_2->attName, aux_2->tipo, aux_2->calif, db); //ESTO DARÁ PROBLEMA*/
+	}
+	if(aux_2 && !alreadyColumn(aux_T->pointer, aux_2->attName)){
+		if(strcmp(aux_2->calif,"primary key"))
+			addCol(nombreTabla3, aux_2->attName, aux_2->tipo, aux_2->calif, db);
 	}
 	
 	aux=aux->antCol;
 	aux_2=aux_2->antCol;
 	
 
+	
+	cout<<columnas<<endl;
+	cout<<valores<<endl;
 	
 	insertInto(nombreTabla3, columnas, valores, db);
 	
@@ -676,6 +704,15 @@ TipoRet dropColNMW(char *atr1, char *atr2, Table db)
 		return OK;
 	}
 	return OK;
+}
+
+void checkTables(Table arbol)
+{
+	if (!arbol)
+		return;
+	checkTables(arbol->izq);
+	cout << '\t' << arbol->name << " ";
+	checkTables(arbol->der);
 }
 
 void credits()

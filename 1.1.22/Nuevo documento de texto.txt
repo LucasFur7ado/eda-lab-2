@@ -25,9 +25,15 @@ printdatatable(hola2
 
 createTable(hola
 createTable(hola2
-addCol(hola,ci,integer,primary key
-addCol(hola,edad,integer,any
-addCol(hola,nombre,integer,any
-addCol(hola2,ci,integer,primary key
-addCol(hola2,edad,integer,any
+addCol(hola,ci,string,primary key
+addCol(hola,edad,string,any
+insertInto(hola,ci,123
+insertInto(hola,ci,456
+addCol(hola2,ci,string,primary key
+addCol(hola2,edad,string,any
+insertInto(hola2,ci,123
+insertInto(hola2,ci,456
+printdatatable(hola
+printdatatable(hola2
 join(hola,hola2,hola3
+printdatatable(hola3

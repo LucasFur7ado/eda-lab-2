@@ -207,7 +207,7 @@ TipoRet insertInto(char *nombreTabla, char *columnaTupla, char *valoresTupla, Ta
 	}
 	while (empty_aux)
 	{
-		insertarInicioDato(empty_aux, createDataNode(empty_aux->attName, empty_aux->tipo, empty));
+		insertarInicioDato(empty_aux, createDataNode(empty_aux->attName, empty_aux->tipo, empty_aux->calif));
 		int integerValue2 = 0;
 		empty_aux->sigTup->valInt = &integerValue2;
 		strcpy(empty_aux->sigTup->valChar, empty);
@@ -405,17 +405,13 @@ void printTables(Table arbol)
 	if (!arbol)
 		cout << "No hay tablas" << endl;
 	else
+	{
+		cout << endl;
 		checkTables(arbol);
+		cout << endl
+			<< endl;
+	}
 }
-
-void checkTables(Table arbol)
-{
-	if (!arbol)
-		return;
-	printTables(arbol->izq);
-	cout << arbol->name << " ";
-	printTables(arbol->der);
-};
 
 bool checkName(Table arbol, char *tableName)
 {
@@ -968,31 +964,69 @@ TipoRet join(char *nombreTabla1, char *nombreTabla2, char *nombreTabla3, Table d
 	}
 	
 	if(!strcmp(data_tabla1, data_tabla2)){
-		cout<<"Son iguales";
 		
 		insertar(db, createTableNode(nombreTabla3));
 		
-		Dato aux = pointer_aux1;
-		Dato aux_2 = pointer_aux2;
+		Dato aux = pointer_aux1->sigTup;
+		Dato aux_2 = pointer_aux2->sigTup;
 		if(!strcmp(aux->tipo, "integer"))
 		{
 			while(aux->sigTup){
+				aux_2=pointer_aux2;
 				while(aux_2->sigTup){
 					if(*aux->valInt == *aux_2->valInt){
 						//SE COPIA LA TUPLA
 						CopyWholeTupla_join(aux, aux_2, nombreTabla3, db);
+						aux_2=aux_2->sigTup;
 					}
-					aux_2=aux_2->sigTup;
+					else
+						aux_2=aux_2->sigTup;
 				}
 				aux=aux->sigTup;
 			}
 		}
+		if(*aux->valInt == *aux_2->valInt){
+			//SE COPIA LA TUPLA
+			CopyWholeTupla_join(aux, aux_2, nombreTabla3, db);
+		}
 		
+		if(!strcmp(aux->tipo, "character"))
+		{
+			while(aux->sigTup){
+				aux_2=pointer_aux2;
+				while(aux_2->sigTup){
+					if(!strcmp(aux->valChar, aux_2->valChar)){
+						//SE COPIA LA TUPLA
+						cout<<"entro"<<endl;
+						CopyWholeTupla_join(aux, aux_2, nombreTabla3, db);
+						aux_2=aux_2->sigTup;
+					}
+					else
+						aux_2=aux_2->sigTup;
+				}
+				aux=aux->sigTup;
+			}
+		}
+		if(!strcmp(aux->valChar, aux_2->valChar)){
+			//SE COPIA LA TUPLA
+			cout<<"entro"<<endl;
+			CopyWholeTupla_join(aux, aux_2, nombreTabla3, db);
+		}
+		
+		
+		
+//		aux_2=pointer_aux2;
+//		while(aux_2){
+//			if(!strcmp(aux_2->attName,"eliminar")){
+//				dropColNMW(nombreTabla3,aux_2->attName,db);
+//			}
+//		}
+		
+		return OK;
 	}
 	
-	
-	
-	cout<<"todo correcto";
+
+	return OK;
 }
 
 TipoRet select(char *tableName, char *cols, char *tableName2, Table db)
@@ -1113,7 +1147,7 @@ TipoRet select(char *tableName, char *cols, char *tableName2, Table db)
 			strcat(valsChar, auxChar);
 			strcpy(auxChar, "");
 		}
-		insertInto(tableName2, colsChar, valsChar, db);
+		(tableName2, colsChar, valsChar, db);
 		strcpy(colsChar, "");
 		strcpy(valsChar, "");
 		pointerAux = pointerAux->sigTup;

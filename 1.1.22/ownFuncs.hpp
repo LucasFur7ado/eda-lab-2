@@ -17,7 +17,7 @@ void CopyWholeTupla(Dato &, char*, Table &);
 void CopyAllTuplas(Dato &, char*, Table);
 void CopyWholeTupla_join(Dato , Dato , char *, Table &);
 TipoRet dropColNMW(char *, char *, Table);
-
+void checkTables(Table );
 bool thereIsPk(Dato);
 bool alreadyColumn(Dato, char *);
 
