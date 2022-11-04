@@ -1024,7 +1024,9 @@ TipoRet select(char *tableName, char *cols, char *tableName2, Table db)
 	int i = 0, cont = 0;
 	if (!strcmp(tableName2, ""))
 	{
-		cout << "Debes ingresar un nombre para la nueva tabla." << endl;
+		cout << endl
+			 << '\t' << "Debes ingresar un nombre para la nueva tabla." << endl
+			 << endl;
 		return ERROR;
 	}
 	if (!strcmp(cols, ""))
@@ -1036,12 +1038,16 @@ TipoRet select(char *tableName, char *cols, char *tableName2, Table db)
 	}
 	if (checkName(aux, tableName))
 	{
-		cout << "Parece que la tabla no existe." << endl;
+		cout << endl
+			 << '\t' << "Parece que la tabla no existe." << endl
+			 << endl;
 		return ERROR;
 	}
 	if (!checkName(aux, tableName2))
 	{
-		cout << "La tabla que intentas crear ya existe." << endl;
+		cout << endl
+			 << '\t' << "La tabla que intentas crear ya existe." << endl
+			 << endl;
 		return ERROR;
 	}
 	else
@@ -1066,7 +1072,9 @@ TipoRet select(char *tableName, char *cols, char *tableName2, Table db)
 	Dato pointerAux = aux->pointer;
 	if (!pointerAux)
 	{
-		cout << "La tabla no tiene columnas." << endl;
+		cout << endl
+			 << '\t' << "La tabla no tiene columnas." << endl
+			 << endl;
 		return ERROR;
 	}
 	for (int k = 0; k < cont; k++)
@@ -1076,11 +1084,12 @@ TipoRet select(char *tableName, char *cols, char *tableName2, Table db)
 			pointerAux = pointerAux->sigCol;
 		if (!pointerAux)
 		{
-			cout << "Una de las columnas ingresadas no existe." << endl;
+			cout << endl
+				 << '\t' << "Una de las columnas ingresadas no existe." << endl
+				 << endl;
 			return ERROR;
 		}
 	}
-
 	pointerAux = aux->pointer;
 	while (pointerAux->sigCol)
 		pointerAux = pointerAux->sigCol;
@@ -1106,6 +1115,7 @@ TipoRet select(char *tableName, char *cols, char *tableName2, Table db)
 	strcpy(tipo, pointerAux->tipo);
 	addCol(tableName2, col, tipo, calif, aux3);
 	pointerAux = aux->pointer->sigTup;
+	Dato pointerAuxAux = pointerAux;
 	char *colsChar = new char[100], *valsChar = new char[100], *auxChar = new char[100];
 	while (pointerAux)
 	{
@@ -1133,10 +1143,13 @@ TipoRet select(char *tableName, char *cols, char *tableName2, Table db)
 			strcat(valsChar, auxChar);
 			strcpy(auxChar, "");
 		}
-		(tableName2, colsChar, valsChar, db);
+		cout << "COLS: " << colsChar << endl;
+		cout << "VALS: " << valsChar << endl;
+		insertIntoNMW(tableName2, colsChar, valsChar, db);
 		strcpy(colsChar, "");
 		strcpy(valsChar, "");
-		pointerAux = pointerAux->sigTup;
+		pointerAux = pointerAuxAux->sigTup;
+		pointerAuxAux = pointerAux;
 	}
 	pointerAux = aux3->pointer;
 	while (pointerAux->sigCol)
