@@ -98,6 +98,21 @@ void borrar(Table &arbol)
 			delete p;
 		}
 }
+void borrar(Table &arbol, char *tableName)
+{
+	if(arbol==NULL) return;
+	if(strcmp(tableName, arbol->name) < 0)
+		borrar(arbol->izq, tableName);
+	else
+		if(strcmp(tableName, arbol->name) > 0)
+		borrar(arbol->der, tableName);
+		else
+		{
+			Table p = arbol;
+			arbol = unirABB(arbol->izq, arbol->der);
+			delete p;
+		}
+}
 
 Table unirABB(Table izq, Table der)
 {

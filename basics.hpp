@@ -11,7 +11,7 @@ Table createTableNode(char *);
 
 Dato createDataNode(char *, char *, char *);
 
-void borrar(Table &);
+void borrar(Table &, char *);
 
 Table unirABB(Table , Table);
 

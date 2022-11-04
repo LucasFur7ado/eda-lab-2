@@ -43,7 +43,8 @@ void printTables(Table);
 void checkTables(Table);
 
 void checkNameP(Table &, Table &, char *);
-void checkNameSub(Table arbol, char *tableName, bool &flag);
+void checkNameSub(Table, char *, bool &);
+void checkNamePSub(Table &, Table &, char *);
 
 bool checkName(Table, char *);
 

@@ -37,7 +37,7 @@ TipoRet dropTable(char *tableName, Table &db)
 			pointer_aux = pointer_aux->sigCol;
 			dropCol(aux->name, aux3->attName, db);
 		}
-		borrar(db);
+		borrar(db, tableName);
 		return OK;
 	}
 	return OK;
@@ -406,7 +406,6 @@ bool checkName(Table arbol, char *tableName)
 {
 	bool flag = true;
 	checkNameSub(arbol, tableName, flag);
-	//cout<<"FLAG1: "<<flag<<endl;
 	return flag;
 }
 
@@ -419,17 +418,20 @@ void checkNameSub(Table arbol, char *tableName, bool &flag)
 		flag = false;
 		return;
 	}
-	checkName(arbol->izq, tableName);
-	checkName(arbol->der, tableName);
+	checkNameSub(arbol->izq, tableName, flag);
+	checkNameSub(arbol->der, tableName, flag);
 }
 
 void checkNameP(Table &arbol, Table &aux, char *tableName)
 {
+	aux = NULL;
+	checkNamePSub(arbol, aux, tableName);
+}
+
+void checkNamePSub(Table &arbol, Table &aux, char *tableName)
+{
 	if (!arbol)
-	{
-		aux = arbol;
 		return;
-	}
 	else
 	{
 		if (!strcmp(arbol->name, tableName))
@@ -439,8 +441,8 @@ void checkNameP(Table &arbol, Table &aux, char *tableName)
 		}
 		else
 		{
-			checkNameP(arbol->izq, aux, tableName);
-			checkNameP(arbol->der, aux, tableName);
+			checkNamePSub(arbol->izq, aux, tableName);
+			checkNamePSub(arbol->der, aux, tableName);
 		}
 	}
 }
@@ -784,7 +786,6 @@ TipoRet dropCol(char *atr1, char *atr2, Table db)
 
 TipoRet selectWhere(char *nombreTabla1, char *condicion, char *nombreTabla2, Table &db)
 {
-	// selectWhere(tabla1,,tabla2) -> manejar error, espacio o cadena erronea
 	cout << "tabla1: " << nombreTabla1 << endl;
 	cout << "cond: " << condicion << endl;
 	cout << "tabla2: " << nombreTabla2 << endl;
@@ -849,17 +850,13 @@ TipoRet selectWhere(char *nombreTabla1, char *condicion, char *nombreTabla2, Tab
 			 << endl;
 		return ERROR;
 	}
-
 	Dato pointer_aux = aux->pointer;
-
 	insertar(db, createTableNode(nombreTabla2));
-
 	if (!strcmp(condicion, "") || !strcmp(condicion, " "))
 	{
 		CopyAllTuplas(aux->pointer, nombreTabla2, db);
 		return OK;
 	}
-
 	while (pointer_aux && strcmp(pointer_aux->attName, matrizVals[0]) != 0)
 		pointer_aux = pointer_aux->sigCol;
 	if (!pointer_aux)
@@ -875,7 +872,6 @@ TipoRet selectWhere(char *nombreTabla1, char *condicion, char *nombreTabla2, Tab
 		strcpy(valor_char, matrizVals[1]);
 		searchCondition_selectWhere(pointer_aux, valor_char, valor_int, operand, nombreTabla2, db);
 	}
-
 	return OK;
 }
 
