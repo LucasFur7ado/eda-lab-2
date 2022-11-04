@@ -984,10 +984,10 @@ TipoRet join(char *nombreTabla1, char *nombreTabla2, char *nombreTabla3, Table d
 				}
 				aux=aux->sigTup;
 			}
-		}
 		if(*aux->valInt == *aux_2->valInt){
 			//SE COPIA LA TUPLA
 			CopyWholeTupla_join(aux, aux_2, nombreTabla3, db);
+		}
 		}
 		
 		if(!strcmp(aux->tipo, "character"))
@@ -997,7 +997,6 @@ TipoRet join(char *nombreTabla1, char *nombreTabla2, char *nombreTabla3, Table d
 				while(aux_2->sigTup){
 					if(!strcmp(aux->valChar, aux_2->valChar)){
 						//SE COPIA LA TUPLA
-						cout<<"entro"<<endl;
 						CopyWholeTupla_join(aux, aux_2, nombreTabla3, db);
 						aux_2=aux_2->sigTup;
 					}
@@ -1006,13 +1005,11 @@ TipoRet join(char *nombreTabla1, char *nombreTabla2, char *nombreTabla3, Table d
 				}
 				aux=aux->sigTup;
 			}
-		}
 		if(!strcmp(aux->valChar, aux_2->valChar)){
 			//SE COPIA LA TUPLA
-			cout<<"entro"<<endl;
 			CopyWholeTupla_join(aux, aux_2, nombreTabla3, db);
 		}
-		
+		}
 		
 		
 //		aux_2=pointer_aux2;
