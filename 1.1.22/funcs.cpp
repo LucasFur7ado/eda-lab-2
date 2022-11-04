@@ -795,7 +795,13 @@ TipoRet dropCol(char *atr1, char *atr2, Table db)
 
 TipoRet selectWhere(char *nombreTabla1, char *condicion, char *nombreTabla2, Table &db){
 	//selectWhere(tabla1,,tabla2) -> manejar error, espacio o cadena erronea
+	cout<<"tabla1: "<<nombreTabla1<<endl;
+	cout<<"cond: "<<condicion<<endl;
+	cout<<"tabla2: "<<nombreTabla2<<endl;
+	
 	char condicion2[3];
+	
+	
 	
 	if(!strcmp(nombreTabla2,"")){
 		strcpy(nombreTabla2,condicion);
@@ -889,6 +895,11 @@ TipoRet selectWhere(char *nombreTabla1, char *condicion, char *nombreTabla2, Tab
 	
 TipoRet join(char *nombreTabla1, char *nombreTabla2, char *nombreTabla3, Table db)
 {
+	//ERRORES:
+	//AVECES LE FALTA COPIAR UNA TUPLA
+	//FALTA VERIFICAR QUE LAS TABLAS NO TENGAN MAS DE UNA COLUMNA IGUAL
+	
+	
 	Table aux = db, aux2 = db;
 	char *data_tabla2;
 	data_tabla2 = new char[100];
@@ -935,7 +946,6 @@ TipoRet join(char *nombreTabla1, char *nombreTabla2, char *nombreTabla3, Table d
 	
 	Dato pointer_aux2 = aux->pointer;
 	
-	
 	while (pointer_aux2 && strcmp(pointer_aux2->calif, "primary key") != 0)
 		pointer_aux2 = pointer_aux2->sigCol;
 	if (!pointer_aux2)
@@ -963,66 +973,53 @@ TipoRet join(char *nombreTabla1, char *nombreTabla2, char *nombreTabla3, Table d
 		strcat(data_tabla2,pointer_aux1->tipo);
 	}
 	
+	if(!pointer_aux1->sigTup || !pointer_aux2->sigTup){
+		cout<<"Una o ambas tablas estan vacias"<<endl; 
+		return ERROR;
+	}
+
 	if(!strcmp(data_tabla1, data_tabla2)){
 		
 		insertar(db, createTableNode(nombreTabla3));
 		
 		Dato aux = pointer_aux1->sigTup;
 		Dato aux_2 = pointer_aux2->sigTup;
-		if(!strcmp(aux->tipo, "integer"))
-		{
-			while(aux->sigTup){
-				aux_2=pointer_aux2;
-				while(aux_2->sigTup){
-					if(*aux->valInt == *aux_2->valInt){
-						//SE COPIA LA TUPLA
-						CopyWholeTupla_join(aux, aux_2, nombreTabla3, db);
-						aux_2=aux_2->sigTup;
-					}
-					else
-						aux_2=aux_2->sigTup;
-				}
-				aux=aux->sigTup;
-			}
-		if(*aux->valInt == *aux_2->valInt){
-			//SE COPIA LA TUPLA
-			CopyWholeTupla_join(aux, aux_2, nombreTabla3, db);
-		}
-		}
-		
-		if(!strcmp(aux->tipo, "character"))
-		{
-			while(aux->sigTup){
-				aux_2=pointer_aux2;
-				while(aux_2->sigTup){
+	
+		while(aux->sigTup){
+			aux_2=pointer_aux2;
+			while(aux_2->sigTup){
+				if(!strcmp(aux->tipo, "character")){
 					if(!strcmp(aux->valChar, aux_2->valChar)){
 						//SE COPIA LA TUPLA
 						CopyWholeTupla_join(aux, aux_2, nombreTabla3, db);
-						aux_2=aux_2->sigTup;
 					}
-					else
-						aux_2=aux_2->sigTup;
 				}
-				aux=aux->sigTup;
+				if(!strcmp(aux->tipo, "integer")){
+					if(*aux->valInt == *aux_2->valInt){
+						//SE COPIA LA TUPLA
+						CopyWholeTupla_join(aux, aux_2, nombreTabla3, db);
+					}
+				}
+					aux_2=aux_2->sigTup;
 			}
-		if(!strcmp(aux->valChar, aux_2->valChar)){
-			//SE COPIA LA TUPLA
-			CopyWholeTupla_join(aux, aux_2, nombreTabla3, db);
+			aux=aux->sigTup;
 		}
+		if(!strcmp(aux->tipo, "character")){	
+			if(!strcmp(aux->valChar, aux_2->valChar)){
+				//SE COPIA LA TUPLA
+				CopyWholeTupla_join(aux, aux_2, nombreTabla3, db);
+			}
 		}
-		
-		
-//		aux_2=pointer_aux2;
-//		while(aux_2){
-//			if(!strcmp(aux_2->attName,"eliminar")){
-//				dropColNMW(nombreTabla3,aux_2->attName,db);
-//			}
-//		}
+		if(!strcmp(aux->tipo, "integer")){
+			if(*aux->valInt == *aux_2->valInt){
+				//SE COPIA LA TUPLA
+				CopyWholeTupla_join(aux, aux_2, nombreTabla3, db);
+			}
+		}
 		
 		return OK;
 	}
 	
-
 	return OK;
 }
 
