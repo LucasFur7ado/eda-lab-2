@@ -34,14 +34,16 @@ TipoRet dropCol(char *, char *, Table);
 TipoRet printMetadata(char *, Table);
 TipoRet createTable(char *, Table &);
 TipoRet dropTable(char *, Table &);
-TipoRet select(char *, char *, char *, Table);
 TipoRet selectWhere(char *, char *, char *, Table &);
+TipoRet select(char *, char *, char *, Table db);
+TipoRet join(char *, char *, char *, Table db);
 
 void insertar(Table &, Table);
 void printTables(Table);
 void checkTables(Table);
 
 void checkNameP(Table &, Table &, char *);
+void checkNameSub(Table arbol, char *tableName, bool &flag);
 
 bool checkName(Table, char *);
 

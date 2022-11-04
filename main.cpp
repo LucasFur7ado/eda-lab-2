@@ -13,8 +13,8 @@ int main(int argc, char *argv[])
 {
 	Table db = NULL;
 	char comando[100] = {0}, delimitador[] = "(,)",
-		*atr1, *atr2, *atr3, *atr4, *atr5;
-	
+		 *atr1, *atr2, *atr3, *atr4, *atr5;
+
 	char helpComm[100] = "/help";
 	char addColComm[100] = "addcol";
 	char dropColComm[100] = "dropcol";
@@ -28,7 +28,8 @@ int main(int argc, char *argv[])
 	char printDataTableComm[100] = "printdatatable";
 	char selectWhereComm[100] = "selectwhere";
 	char selectComm[100] = "select";
-	
+	char joinComm[100] = "join";
+
 	while (true)
 	{
 		atr1 = new char[100];
@@ -44,14 +45,12 @@ int main(int argc, char *argv[])
 			atr4[l] = NULL;
 		}
 		cout << ">> ";
-	/*	cin>> comando;*/
-		
+		// cin >> comando; en linux
 		gets(comando);
 		int largo = strlen(comando);
-		for (int letra = 0; letra < largo; ++letra)  
-			comando[letra] = tolower(comando[letra]); 
-		
-		
+		for (int letra = 0; letra < largo; ++letra)
+			comando[letra] = tolower(comando[letra]);
+
 		char *nuevo = strtok(comando, delimitador);
 		nuevo = strtok(NULL, delimitador);
 		if (nuevo)
@@ -86,18 +85,21 @@ int main(int argc, char *argv[])
 			dropTable(atr1, db);
 		else if (!strcmp(comando, printMetadataComm))
 			printMetadata(atr1, db);
+		else if (!strcmp(comando, selectWhereComm))
+			selectWhere(atr1, atr2, atr3, db);
+		else if (!strcmp(comando, selectComm))
+			select(atr1, atr2, atr3, db);
+		else if (!strcmp(comando, joinComm))
+			join(atr1, atr2, atr3, db);
 		else if (!strcmp(comando, creditsComm))
 			credits();
 		else if (!strcmp(comando, helpComm))
 			help();
-		else if (!strcmp(comando,selectWhereComm))
-				 selectWhere(atr1, atr2, atr3, db);
-		else if (!strcmp(comando,selectComm))
-				 select(atr1, atr2, atr3, db);
 		else
-		{	
+		{
 			cout << endl
-				<< '\t' << "No existe ese comando, /help para mas ayuda" << endl;
+				 << '\t' << "No existe ese comando, /help para mas ayuda" << endl
+				 << endl;
 		}
 	}
 	return 0;

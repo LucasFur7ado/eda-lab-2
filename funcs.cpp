@@ -8,33 +8,14 @@
 
 using namespace std;
 
-TipoRet select(char *tableName, char *cols, char *tableName2, Table db)
+// FUNCIONES
+
+TipoRet dropTable(char *tableName, Table &db)
 {
-	Table aux = db, aux2 = db, aux3 = db;
-	char delimitador[] = ":", _integer[100] = "integer", _character[100] = "character", empty[100] = "empty";
-	char colsArr[50][100] = {0};
-	char *nuev = strtok(cols, delimitador);
-	int i = 0, cont = 0;
-	if (!strcmp(tableName2, ""))
-	{
-		cout << "Debes ingresar un nombre para la nueva tabla." << endl;
-		return ERROR;
-	}
-	if (!strcmp(cols, ""))
-	{
-		cout << endl
-			 << '\t' << "Debes ingresar al menos una columna." << endl
-			 << endl;
-		return ERROR;
-	}
+	Table aux = db, aux2 = db;
 	if (checkName(aux, tableName))
 	{
 		cout << "Parece que la tabla no existe." << endl;
-		return ERROR;
-	}
-	if (!checkName(aux, tableName2))
-	{
-		cout << "La tabla que intentas crear ya existe." << endl;
 		return ERROR;
 	}
 	else
@@ -46,173 +27,17 @@ TipoRet select(char *tableName, char *cols, char *tableName2, Table db)
 			 << endl;
 		return ERROR;
 	}
-	if (nuev)
-	{
-		while (nuev)
-		{
-			strcpy(colsArr[i], nuev);
-			nuev = strtok(NULL, delimitador);
-			i++;
-			cont++;
-		}
-	}
-	Dato pointerAux = aux->pointer;
-	if (!pointerAux)
-	{
-		cout << "La tabla no tiene columnas." << endl;
-		return ERROR;
-	}
-	for (int k = 0; k < cont; k++)
-	{
-		pointerAux = aux->pointer;
-		while (pointerAux && strcmp(pointerAux->attName, colsArr[k]) != 0)
-			pointerAux = pointerAux->sigCol;
-		if (!pointerAux)
-		{
-			cout << "Una de las columnas ingresadas no existe." << endl;
-			return ERROR;
-		}
-	}
-
-	pointerAux = aux->pointer;
-	while (pointerAux->sigCol)
-		pointerAux = pointerAux->sigCol;
-	createTable(tableName2, db);
-	aux2 = db;
-	checkNameP(aux2, aux3, tableName2);
-	while (pointerAux->antCol)
-	{
-		char *col = new char[50];
-		char *calif = new char[50];
-		char *tipo = new char[50];
-		strcpy(col, pointerAux->attName);
-		strcpy(calif, pointerAux->calif);
-		strcpy(tipo, pointerAux->tipo);
-		addCol(tableName2, col, tipo, calif, aux3);
-		pointerAux = pointerAux->antCol;
-	}
-	char *col = new char[50];
-	char *calif = new char[50];
-	char *tipo = new char[50];
-	strcpy(col, pointerAux->attName);
-	strcpy(calif, pointerAux->calif);
-	strcpy(tipo, pointerAux->tipo);
-	addCol(tableName2, col, tipo, calif, aux3);
-	pointerAux = aux->pointer->sigTup;
-	char *colsChar = new char[100], *valsChar = new char[100], *auxChar = new char[100];
-	while (pointerAux)
-	{
-		while (pointerAux->sigCol)
-		{
-			strcat(colsChar, pointerAux->attName);
-			strcat(colsChar, ":");
-			if (!strcmp(pointerAux->tipo, "character"))
-				strcat(valsChar, pointerAux->valChar);
-			else
-			{
-				sprintf(auxChar, "%d", *pointerAux->valInt);
-				strcat(valsChar, auxChar);
-				strcpy(auxChar, "");
-			}
-			strcat(valsChar, ":");
-			pointerAux = pointerAux->sigCol;
-		}
-		strcat(colsChar, pointerAux->attName);
-		if (!strcmp(pointerAux->tipo, "character"))
-			strcat(valsChar, pointerAux->valChar);
-		else
-		{
-			sprintf(auxChar, "%d", *pointerAux->valInt);
-			strcat(valsChar, auxChar);
-			strcpy(auxChar, "");
-		}
-		insertInto(tableName2, colsChar, valsChar, db);
-		strcpy(colsChar, "");
-		strcpy(valsChar, "");
-		pointerAux = pointerAux->sigTup;
-	}
-	pointerAux = aux3->pointer;
-	while (pointerAux->sigCol)
-		pointerAux = pointerAux->sigCol;
-	while (pointerAux->antCol)
-	{
-		bool flag = false;
-		for (int i = 0; i < cont; i++)
-		{
-			if (!strcmp(pointerAux->attName, colsArr[i]))
-			{
-				flag = true;
-				i = cont;
-			}
-		}
-		if (!flag)
-		{
-			pointerAux = pointerAux->antCol;
-			dropColNMW(tableName2, pointerAux->sigCol->attName, db);
-		}
-		else
-			pointerAux = pointerAux->antCol;
-	}
-	bool flag = false;
-	for (int i = 0; i < cont; i++)
-	{
-		if (!strcmp(pointerAux->attName, colsArr[i]))
-		{
-			flag = true;
-			i = cont;
-		}
-	}
-	if (!flag)
-	{
-		dropCol(tableName2, pointerAux->attName, db);
-	}
-	return OK;
-}
-
-TipoRet dropTable(char *atr1, Table &db)
-{
-	Table aux = db, aux2 = db;
-
-	if (checkName(aux, atr1))
-	{
-		cout << "Parece que la tabla no existe." << endl;
-		return ERROR;
-	}
-	else
-		checkNameP(aux2, aux, atr1);
-	if (!aux)
-	{
-		cout << endl
-			 << '\t' << "Parece que la tabla no existe." << endl
-			 << endl;
-		return ERROR;
-	}
 	else
 	{
 		Dato pointer_aux = aux->pointer;
-		Dato aux_dato;
-		Dato aux2;
+		Dato aux3;
 		while (pointer_aux)
 		{
-			aux2 = pointer_aux;
-
-			while (aux2->sigTup)
-			{
-				aux_dato = aux2;
-				aux2 = aux2->sigTup;
-				delete aux_dato;
-			}
-
+			aux3 = pointer_aux;
 			pointer_aux = pointer_aux->sigCol;
+			dropCol(aux->name, aux3->attName, db);
 		}
-		/*Table aux_table = aux, aux_table2;*/
-		//		if (aux == NULL)
-		//		{
-		//			delete aux;
-		//		}
-
-		borrar(aux);
-		cout << "BORRADO" << endl;
+		borrar(db);
 		return OK;
 	}
 	return OK;
@@ -365,7 +190,7 @@ TipoRet insertInto(char *nombreTabla, char *columnaTupla, char *valoresTupla, Ta
 	}
 	while (empty_aux)
 	{
-		insertarInicioDato(empty_aux, createDataNode(empty_aux->attName, empty_aux->tipo, empty));
+		insertarInicioDato(empty_aux, createDataNode(empty_aux->attName, empty_aux->tipo, empty_aux->calif));
 		int integerValue2 = 0;
 		empty_aux->sigTup->valInt = &integerValue2;
 		strcpy(empty_aux->sigTup->valChar, empty);
@@ -534,17 +359,21 @@ TipoRet createTable(char *atr1, Table &db)
 		return ERROR;
 	}
 	Table aux = db;
-
 	if (!checkName(aux, atr1))
 	{
-		cout << "La tabla ya existe" << endl;
+		cout << endl
+			 << '\t' << "La tabla ya existe." << endl
+			 << endl;
 		return ERROR;
 	}
-
-	// insertarInicio(db, createTableNode(atr1));
 	insertar(db, createTableNode(atr1));
 	if (!db)
+	{
+		cout << endl
+			 << '\t' << "Hubo un error." << endl
+			 << endl;
 		return ERROR;
+	}
 	return OK;
 }
 
@@ -561,26 +390,35 @@ void insertar(Table &arbol, Table v)
 void printTables(Table arbol)
 {
 	if (!arbol)
-		cout << "No hay tablas" << endl;
+		cout << endl
+			 << '\t' << "No hay tablas." << endl
+			 << endl;
 	else
+	{
+		cout << endl;
 		checkTables(arbol);
+		cout << endl
+			 << endl;
+	}
 }
-
-void checkTables(Table arbol)
-{
-	if (!arbol)
-		return;
-	printTables(arbol->izq);
-	cout << arbol->name << " ";
-	printTables(arbol->der);
-};
 
 bool checkName(Table arbol, char *tableName)
 {
+	bool flag = true;
+	checkNameSub(arbol, tableName, flag);
+	//cout<<"FLAG1: "<<flag<<endl;
+	return flag;
+}
+
+void checkNameSub(Table arbol, char *tableName, bool &flag)
+{
 	if (!arbol)
-		return true;
+		return;
 	if (!strcmp(arbol->name, tableName))
-		return false;
+	{
+		flag = false;
+		return;
+	}
 	checkName(arbol->izq, tableName);
 	checkName(arbol->der, tableName);
 }
@@ -642,7 +480,9 @@ TipoRet printDataTable(char *NombreTabla, char *ordenadaPor, Table db)
 		}
 		if (checkName(aux, NombreTabla))
 		{
-			cout << "Parece que la tabla no existe." << endl;
+			cout << endl
+				 << '\t' << "Parece que la tabla no existe." << endl
+				 << endl;
 			return ERROR;
 		}
 		else
@@ -677,10 +517,7 @@ TipoRet printDataTable(char *NombreTabla, char *ordenadaPor, Table db)
 			cout << endl
 				 << '\t';
 			while (pointer_aux_2->sigCol)
-			{
 				pointer_aux_2 = pointer_aux_2->sigCol;
-			}
-
 			while (pointer_aux_2->antCol)
 			{
 
@@ -688,14 +525,11 @@ TipoRet printDataTable(char *NombreTabla, char *ordenadaPor, Table db)
 				pointer_aux_2 = pointer_aux_2->antCol;
 			}
 			cout << pointer_aux_2->attName << endl;
-
 			pointer_aux_2 = aux->pointer;
-
 			while (pointer_aux_2->sigCol)
 				pointer_aux_2 = pointer_aux_2->sigCol;
 			pointer_aux = pointer_aux_2->sigTup;
 			pointer_aux_2 = pointer_aux;
-
 			while (pointer_aux->antCol || pointer_aux->sigTup)
 			{
 				cout << endl
@@ -712,7 +546,6 @@ TipoRet printDataTable(char *NombreTabla, char *ordenadaPor, Table db)
 						else
 							cout << *pointer_aux->valInt << ":";
 					}
-
 					pointer_aux = pointer_aux->antCol;
 				}
 				if (!pointer_aux->sigCol && !pointer_aux->antCol)
@@ -733,7 +566,7 @@ TipoRet printDataTable(char *NombreTabla, char *ordenadaPor, Table db)
 					pointer_aux_2 = pointer_aux;
 				}
 			}
-			if (!pointer_aux->sigCol) //?
+			if (!pointer_aux->sigCol)
 			{
 				cout << endl
 					 << '\t';
@@ -951,6 +784,20 @@ TipoRet dropCol(char *atr1, char *atr2, Table db)
 
 TipoRet selectWhere(char *nombreTabla1, char *condicion, char *nombreTabla2, Table &db)
 {
+	// selectWhere(tabla1,,tabla2) -> manejar error, espacio o cadena erronea
+	cout << "tabla1: " << nombreTabla1 << endl;
+	cout << "cond: " << condicion << endl;
+	cout << "tabla2: " << nombreTabla2 << endl;
+
+	char condicion2[3];
+
+	if (!strcmp(nombreTabla2, ""))
+	{
+		strcpy(nombreTabla2, condicion);
+		strcpy(condicion, "");
+		strcpy(condicion2, " ");
+	}
+
 	char delim[] = "=<>";
 	char *copia = new char[100];
 	strcpy(copia, condicion);
@@ -976,6 +823,12 @@ TipoRet selectWhere(char *nombreTabla1, char *condicion, char *nombreTabla2, Tab
 	valor = strtol(matrizVals[1], NULL, 10);
 	valor_int = &valor;
 
+	if (i == 1 && strcmp(condicion, " ") != 0)
+	{
+		cout << "Condicion erronea" << endl;
+		return ERROR;
+	}
+
 	Table aux = db, aux2 = db;
 	if (!checkName(aux, nombreTabla2))
 	{
@@ -996,9 +849,16 @@ TipoRet selectWhere(char *nombreTabla1, char *condicion, char *nombreTabla2, Tab
 			 << endl;
 		return ERROR;
 	}
+
 	Dato pointer_aux = aux->pointer;
 
 	insertar(db, createTableNode(nombreTabla2));
+
+	if (!strcmp(condicion, "") || !strcmp(condicion, " "))
+	{
+		CopyAllTuplas(aux->pointer, nombreTabla2, db);
+		return OK;
+	}
 
 	while (pointer_aux && strcmp(pointer_aux->attName, matrizVals[0]) != 0)
 		pointer_aux = pointer_aux->sigCol;
@@ -1016,5 +876,306 @@ TipoRet selectWhere(char *nombreTabla1, char *condicion, char *nombreTabla2, Tab
 		searchCondition_selectWhere(pointer_aux, valor_char, valor_int, operand, nombreTabla2, db);
 	}
 
+	return OK;
+}
+
+TipoRet join(char *nombreTabla1, char *nombreTabla2, char *nombreTabla3, Table db)
+{
+	// ERRORES:
+	// AVECES LE FALTA COPIAR UNA TUPLA
+	Table aux = db, aux2 = db;
+	char *data_tabla2 = new char[100];
+	char *data_tabla1 = new char[100];
+
+	if (!strcmp(nombreTabla1, "") || !strcmp(nombreTabla2, "") || !strcmp(nombreTabla3, ""))
+	{
+		cout << endl
+			 << '\t' << "Faltan argumentos. /help para mas ayuda" << endl
+			 << endl;
+		return ERROR;
+	}
+	if (!checkName(aux, nombreTabla3))
+	{
+		cout << endl
+			 << '\t' << "Ya existe una tabla < " << nombreTabla3 << " >" << endl
+			 << endl;
+		return ERROR;
+	}
+	if (checkName(aux, nombreTabla1))
+	{
+		cout << endl
+			 << '\t' << "Parece que la tabla1 no existe." << endl
+			 << endl;
+		return ERROR;
+	}
+	else
+		checkNameP(aux2, aux, nombreTabla1);
+	if (!aux)
+	{
+		cout << endl
+			 << '\t' << "Parece que la tabla1 no existe." << endl
+			 << endl;
+		return ERROR;
+	}
+	Dato pointer_aux1 = aux->pointer;
+	Dato pointer_aux3 = aux->pointer;
+	if (checkName(aux, nombreTabla2))
+	{
+		cout << "Parece que la tabla2 no existe." << endl;
+		return ERROR;
+	}
+	else
+		checkNameP(aux2, aux, nombreTabla2);
+	if (!aux)
+	{
+		cout << endl
+			 << '\t' << "Parece que la tabla2 no existe." << endl
+			 << endl;
+		return ERROR;
+	}
+	Dato pointer_aux2 = aux->pointer;
+	while (pointer_aux3)
+	{
+		pointer_aux2 = aux->pointer;
+		while (pointer_aux2)
+		{
+			if (!strcmp(pointer_aux3->attName, pointer_aux2->attName) &&
+				strcmp(pointer_aux3->calif, "primary key") != 0)
+			{
+				cout << endl
+					 << '\t' << "Las tablas ingresadas tienen mas de una columna en comun." << endl
+					 << endl;
+				return ERROR;
+			}
+			pointer_aux2 = pointer_aux2->sigCol;
+		}
+		pointer_aux3 = pointer_aux3->sigCol;
+	}
+	pointer_aux2 = aux->pointer;
+
+	while (pointer_aux2 && strcmp(pointer_aux2->calif, "primary key") != 0)
+		pointer_aux2 = pointer_aux2->sigCol;
+	if (!pointer_aux2)
+	{
+		cout << endl
+			 << '\t' << "No hay columna primary key en la tabla " << nombreTabla2 << endl
+			 << endl;
+		return ERROR;
+	}
+	else
+	{
+		strcat(data_tabla1, pointer_aux2->attName);
+		strcat(data_tabla1, pointer_aux2->tipo);
+	}
+	while (pointer_aux1 && strcmp(pointer_aux1->calif, "primary key") != 0)
+		pointer_aux1 = pointer_aux1->sigCol;
+	if (!pointer_aux1)
+	{
+		cout << endl
+			 << '\t' << "No hay columna primary key en la tabla " << nombreTabla1 << "." << endl
+			 << endl;
+		return ERROR;
+	}
+	else
+	{
+		strcat(data_tabla2, pointer_aux1->attName);
+		strcat(data_tabla2, pointer_aux1->tipo);
+	}
+	if (!pointer_aux1->sigTup || !pointer_aux2->sigTup)
+	{
+		cout << endl
+			 << '\t' << "Una o ambas tablas estan vacias." << endl
+			 << endl;
+		return ERROR;
+	}
+	if (!strcmp(data_tabla1, data_tabla2))
+	{
+		insertar(db, createTableNode(nombreTabla3));
+		Dato aux = pointer_aux1->sigTup;
+		Dato aux_2 = pointer_aux2->sigTup;
+		while (aux->sigTup)
+		{
+			aux_2 = pointer_aux2;
+			while (aux_2->sigTup)
+			{
+				if (!strcmp(aux->tipo, "character"))
+					if (!strcmp(aux->valChar, aux_2->valChar))
+						CopyWholeTupla_join(aux, aux_2, nombreTabla3, db);
+				if (!strcmp(aux->tipo, "integer"))
+					if (*aux->valInt == *aux_2->valInt)
+						CopyWholeTupla_join(aux, aux_2, nombreTabla3, db);
+				aux_2 = aux_2->sigTup;
+			}
+			aux = aux->sigTup;
+		}
+		if (!strcmp(aux->tipo, "character"))
+			if (!strcmp(aux->valChar, aux_2->valChar))
+				CopyWholeTupla_join(aux, aux_2, nombreTabla3, db);
+		if (!strcmp(aux->tipo, "integer"))
+			if (*aux->valInt == *aux_2->valInt)
+				CopyWholeTupla_join(aux, aux_2, nombreTabla3, db);
+		return OK;
+	}
+	return OK;
+}
+
+TipoRet select(char *tableName, char *cols, char *tableName2, Table db)
+{
+	Table aux = db, aux2 = db, aux3 = db;
+	char delimitador[] = ":", _integer[100] = "integer", _character[100] = "character", empty[100] = "empty";
+	char colsArr[50][100] = {0};
+	char *nuev = strtok(cols, delimitador);
+	int i = 0, cont = 0;
+	if (!strcmp(tableName2, ""))
+	{
+		cout << "Debes ingresar un nombre para la nueva tabla." << endl;
+		return ERROR;
+	}
+	if (!strcmp(cols, ""))
+	{
+		cout << endl
+			 << '\t' << "Debes ingresar al menos una columna." << endl
+			 << endl;
+		return ERROR;
+	}
+	if (checkName(aux, tableName))
+	{
+		cout << "Parece que la tabla no existe." << endl;
+		return ERROR;
+	}
+	if (!checkName(aux, tableName2))
+	{
+		cout << "La tabla que intentas crear ya existe." << endl;
+		return ERROR;
+	}
+	else
+		checkNameP(aux2, aux, tableName);
+	if (!aux)
+	{
+		cout << endl
+			 << '\t' << "Parece que la tabla no existe." << endl
+			 << endl;
+		return ERROR;
+	}
+	if (nuev)
+	{
+		while (nuev)
+		{
+			strcpy(colsArr[i], nuev);
+			nuev = strtok(NULL, delimitador);
+			i++;
+			cont++;
+		}
+	}
+	Dato pointerAux = aux->pointer;
+	if (!pointerAux)
+	{
+		cout << "La tabla no tiene columnas." << endl;
+		return ERROR;
+	}
+	for (int k = 0; k < cont; k++)
+	{
+		pointerAux = aux->pointer;
+		while (pointerAux && strcmp(pointerAux->attName, colsArr[k]) != 0)
+			pointerAux = pointerAux->sigCol;
+		if (!pointerAux)
+		{
+			cout << "Una de las columnas ingresadas no existe." << endl;
+			return ERROR;
+		}
+	}
+
+	pointerAux = aux->pointer;
+	while (pointerAux->sigCol)
+		pointerAux = pointerAux->sigCol;
+	createTable(tableName2, db);
+	aux2 = db;
+	checkNameP(aux2, aux3, tableName2);
+	while (pointerAux->antCol)
+	{
+		char *col = new char[50];
+		char *calif = new char[50];
+		char *tipo = new char[50];
+		strcpy(col, pointerAux->attName);
+		strcpy(calif, pointerAux->calif);
+		strcpy(tipo, pointerAux->tipo);
+		addCol(tableName2, col, tipo, calif, aux3);
+		pointerAux = pointerAux->antCol;
+	}
+	char *col = new char[50];
+	char *calif = new char[50];
+	char *tipo = new char[50];
+	strcpy(col, pointerAux->attName);
+	strcpy(calif, pointerAux->calif);
+	strcpy(tipo, pointerAux->tipo);
+	addCol(tableName2, col, tipo, calif, aux3);
+	pointerAux = aux->pointer->sigTup;
+	char *colsChar = new char[100], *valsChar = new char[100], *auxChar = new char[100];
+	while (pointerAux)
+	{
+		while (pointerAux->sigCol)
+		{
+			strcat(colsChar, pointerAux->attName);
+			strcat(colsChar, ":");
+			if (!strcmp(pointerAux->tipo, "character"))
+				strcat(valsChar, pointerAux->valChar);
+			else
+			{
+				sprintf(auxChar, "%d", *pointerAux->valInt);
+				strcat(valsChar, auxChar);
+				strcpy(auxChar, "");
+			}
+			strcat(valsChar, ":");
+			pointerAux = pointerAux->sigCol;
+		}
+		strcat(colsChar, pointerAux->attName);
+		if (!strcmp(pointerAux->tipo, "character"))
+			strcat(valsChar, pointerAux->valChar);
+		else
+		{
+			sprintf(auxChar, "%d", *pointerAux->valInt);
+			strcat(valsChar, auxChar);
+			strcpy(auxChar, "");
+		}
+		(tableName2, colsChar, valsChar, db);
+		strcpy(colsChar, "");
+		strcpy(valsChar, "");
+		pointerAux = pointerAux->sigTup;
+	}
+	pointerAux = aux3->pointer;
+	while (pointerAux->sigCol)
+		pointerAux = pointerAux->sigCol;
+	while (pointerAux->antCol)
+	{
+		bool flag = false;
+		for (int i = 0; i < cont; i++)
+		{
+			if (!strcmp(pointerAux->attName, colsArr[i]))
+			{
+				flag = true;
+				i = cont;
+			}
+		}
+		if (!flag)
+		{
+			pointerAux = pointerAux->antCol;
+			dropColNMW(tableName2, pointerAux->sigCol->attName, db);
+		}
+		else
+			pointerAux = pointerAux->antCol;
+	}
+	bool flag = false;
+	for (int i = 0; i < cont; i++)
+	{
+		if (!strcmp(pointerAux->attName, colsArr[i]))
+		{
+			flag = true;
+			i = cont;
+		}
+	}
+	if (!flag)
+	{
+		dropCol(tableName2, pointerAux->attName, db);
+	}
 	return OK;
 }

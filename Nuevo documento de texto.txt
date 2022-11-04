@@ -1,11 +1,14 @@
 createTable(hola
 addCol(hola,nombre,string,primary key
-addCol(hola,edad,string,any
+addCol(hola,edad,integer,any
 addCol(hola,dire,string,any
+addCol(hola,ci,integer,any
+addCol(hola,sexo,integer,any
 insertInto(hola,nombre:edad:dire,pepe:20:asd
 insertInto(hola,nombre:edad:dire,juan:45:asdd
 insertInto(hola,nombre:edad:dire,juan:20:afdfs
-selectWhere(hola,nombre=juan,hola2
+insertInto(hola,nombre:edad:dire:ci,juan:20:afdfs:578432
+insertInto(hola,nombre:edad:dire:ci,julian:20:afdfs:578432
 printmetadata(hola
 printmetadata(hola2
 printdatatable(hola
@@ -19,3 +22,93 @@ printmetadata(hola
 printmetadata(hola2
 printdatatable(hola
 printdatatable(hola2
+
+createTable(hola
+createTable(hola2
+addCol(hola,ci,string,primary key
+addCol(hola,edad,string,any
+addCol(hola,sexo,string,any
+addCol(hola,direccion,string,any
+addCol(hola,autor,string,any
+insertInto(hola,ci:direccion,000:jaimeross
+insertInto(hola,ci:autor,999:leandrogomez
+insertInto(hola,ci,333
+insertInto(hola,ci:edad,123:20
+insertInto(hola,ci,456
+insertInto(hola,ci:edad,111:80
+addCol(hola2,ci,string,primary key
+addCol(hola2,nombre,string,any
+insertInto(hola2,ci,333
+insertInto(hola2,ci,456
+insertInto(hola2,ci:nombre,111:pepe
+insertInto(hola2,ci:nombre,123:juan
+printdatatable(hola
+printdatatable(hola2
+join(hola,hola2,hola3
+printdatatable(hola3
+
+
+
+
+
+createTable(hola
+createTable(hola2
+addCol(hola,ci,integer,primary key
+addCol(hola,edad,integer,any
+insertInto(hola,ci,333
+insertInto(hola,ci,32312
+insertInto(hola,ci:edad,123:20
+insertInto(hola,ci,456
+insertInto(hola,ci:edad,111:80
+addCol(hola2,ci,integer,primary key
+insertInto(hola2,ci,456
+insertInto(hola2,ci,333
+insertInto(hola2,ci,111
+insertInto(hola2,ci,123
+insertInto(hola2,ci,890
+printdatatable(hola
+printdatatable(hola2
+join(hola,hola2,hola3
+printdatatable(hola3
+
+createTable(hola
+createTable(hola2
+addCol(hola,ci,integer,primary key
+addCol(hola,edad,integer,any
+addCol(hola,sexo,string,any
+addCol(hola,direccion,string,any
+addCol(hola,autor,string,any
+insertInto(hola,ci:direccion,1589:jaimeross
+insertInto(hola,ci:autor,999:leandrogomez
+insertInto(hola,ci,333
+insertInto(hola,ci:edad,123:20
+insertInto(hola,ci,456
+insertInto(hola,ci:edad,111:80
+addCol(hola2,ci,integer,primary key
+addCol(hola2,direccion,string,any
+addCol(hola2,nombre,string,any
+insertInto(hola2,ci,333
+insertInto(hola2,ci,456
+insertInto(hola2,ci:nombre,111:pepe
+insertInto(hola2,ci,999
+insertInto(hola2,ci:nombre,123:juan
+insertInto(hola2,ci:direccion,543:felippone
+insertInto(hola2,ci,666
+printdatatable(hola
+printdatatable(hola2
+join(hola,hola2,hola3
+printdatatable(hola3
+
+
+createTable(hola
+createTable(hola2
+addCol(hola,ci,integer,primary key
+addCol(hola,edad,integer,any
+addCol(hola2,ci,integer,primary key
+addCol(hola2,edad,integer,any
+insertInto(hola,ci,123
+insertInto(hola2,ci,123
+printdatatable(hola
+printdatatable(hola2
+join(hola,hola2,hola3
+printdatatable(hola3
