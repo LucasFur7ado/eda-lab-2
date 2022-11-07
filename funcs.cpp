@@ -19,7 +19,7 @@ TipoRet dropTable(char *tableName, Table &db)
 	// 	return ERROR;
 	// }
 	// else
-		checkNameP(aux2, aux, tableName);
+	checkNameP(aux2, aux, tableName);
 	if (!aux)
 	{
 		cout << endl
@@ -77,7 +77,7 @@ TipoRet deleteTupla(char *atr1, char *atr2, Table &db)
 	// 	return ERROR;
 	// }
 	// else
-		checkNameP(aux2, aux, atr1);
+	checkNameP(aux2, aux, atr1);
 	if (!aux)
 	{
 		cout << endl
@@ -160,7 +160,7 @@ TipoRet insertInto(char *nombreTabla, char *columnaTupla, char *valoresTupla, Ta
 	// 	return ERROR;
 	// }
 	// else
-		checkNameP(aux2, aux, nombreTabla);
+	checkNameP(aux2, aux, nombreTabla);
 	if (!aux)
 	{
 		cout << endl
@@ -516,7 +516,7 @@ TipoRet printDataTable(char *NombreTabla, char *ordenadaPor, Table db)
 		// 	return ERROR;
 		// }
 		// else
-			checkNameP(aux2, aux, NombreTabla);
+		checkNameP(aux2, aux, NombreTabla);
 		if (!aux)
 		{
 			cout << endl
@@ -642,7 +642,7 @@ TipoRet printMetadata(char *tableName, Table db)
 		// 	return ERROR;
 		// }
 		// else
-			checkNameP(aux2, aux, tableName);
+		checkNameP(aux2, aux, tableName);
 		if (!aux)
 		{
 			cout << endl
@@ -702,7 +702,7 @@ TipoRet dropCol(char *atr1, char *atr2, Table db)
 	// 	return ERROR;
 	// }
 	// else
-		checkNameP(aux2, aux, atr1);
+	checkNameP(aux2, aux, atr1);
 	if (!aux)
 	{
 		cout << endl
@@ -967,7 +967,30 @@ TipoRet join(char *nombreTabla1, char *nombreTabla2, char *nombreTabla3, Table d
 			 << endl;
 		return ERROR;
 	}
+
 	Dato pointer_aux2 = aux->pointer;
+
+	while (pointer_aux2 && strcmp(pointer_aux2->calif, "primary key") != 0)
+		pointer_aux2 = pointer_aux2->sigCol;
+	if (!pointer_aux2)
+	{
+		cout << endl
+			 << '\t' << "No hay columna primary key en la tabla < " << nombreTabla2 << " >" << endl
+			 << endl;
+		return ERROR;
+	}
+	while (pointer_aux1 && strcmp(pointer_aux1->calif, "primary key") != 0)
+		pointer_aux1 = pointer_aux1->sigCol;
+	if (!pointer_aux1)
+	{
+		cout << endl
+			 << '\t' << "No hay columna primary key en la tabla " << nombreTabla1 << "." << endl
+			 << endl;
+		return ERROR;
+	}
+
+	pointer_aux2 = aux->pointer;
+
 	while (pointer_aux3)
 	{
 		pointer_aux2 = aux->pointer;
@@ -1001,6 +1024,9 @@ TipoRet join(char *nombreTabla1, char *nombreTabla2, char *nombreTabla3, Table d
 		strcat(data_tabla1, pointer_aux2->attName);
 		strcat(data_tabla1, pointer_aux2->tipo);
 	}
+	checkNameP(aux2, aux, nombreTabla1);
+	pointer_aux1 = aux->pointer;
+	
 	while (pointer_aux1 && strcmp(pointer_aux1->calif, "primary key") != 0)
 		pointer_aux1 = pointer_aux1->sigCol;
 	if (!pointer_aux1)

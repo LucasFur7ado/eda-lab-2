@@ -47,9 +47,9 @@ insertInto(tiposPersona,CI:tipo,33:Estudiante)
 insertInto(tiposPersona,CI:tipo,44:Estudiante)
 join(tipoPersona,personas,personasTipo)
 join(tiposPersona,persona,personasTipo) 
-join(tiposPersona,personas,apellidos) error tabla existe
+join(tiposPersona,personas,apellidos) 
 printDataTable(tiposPersona)
 printDataTable(personas)
-printDataTable(personasTipo) error tabla no existe
+printDataTable(personasTipo) 
 join(tiposPersona,personas,personasTipo)
 printDataTable(personasTipo)
