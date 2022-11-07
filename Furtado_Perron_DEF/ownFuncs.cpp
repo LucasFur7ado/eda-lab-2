@@ -137,7 +137,7 @@ char validateEntry(Dato pointer, char args[50][100], char vals[50][100], int con
 			for (int i = 0; i < cont; i++)
 				if (!strcmp(args[i], aux->attName))
 				{
-					pos = cont;
+					pos = i;
 					flag0 = true;
 				}
 			aux2 = aux->sigTup;
@@ -147,7 +147,7 @@ char validateEntry(Dato pointer, char args[50][100], char vals[50][100], int con
 				{
 					int *valor_int;
 					int valor;
-					valor = strtol(vals[pos - 1], NULL, 10);
+					valor = strtol(vals[pos ], NULL, 10);
 					valor_int = &valor;
 					if (*aux2->valInt == *valor_int)
 					{
