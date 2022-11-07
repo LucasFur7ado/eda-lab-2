@@ -909,35 +909,43 @@ TipoRet join(char *nombreTabla1, char *nombreTabla2, char *nombreTabla3, Table d
 	Table aux = db, aux2 = db;
 	char *data_tabla2 = new char[100];
 	char *data_tabla1 = new char[100];
-
+	
 	if (!strcmp(nombreTabla1, "") || !strcmp(nombreTabla2, "") || !strcmp(nombreTabla3, ""))
 	{
 		cout << endl
-			 << '\t' << "Faltan argumentos. /help para mas ayuda" << endl
-			 << endl;
+			<< '\t' << "Faltan argumentos. /help para mas ayuda" << endl
+			<< endl;
 		return ERROR;
 	}
-	if (!checkName(aux, nombreTabla3))
+	// if (!checkName(aux, nombreTabla3))
+	// {
+	// 	cout << endl
+	// 		 << '\t' << "Ya existe una tabla < " << nombreTabla3 << " >" << endl
+	// 		 << endl;
+	// 	return ERROR;
+	// }
+	// if (checkName(aux, nombreTabla1))
+	// {
+	// 	cout << endl
+	// 		 << '\t' << "Parece que la tabla1 no existe." << endl
+	// 		 << endl;
+	// 	return ERROR;
+	// }
+	// else
+	checkNameP(aux2, aux, nombreTabla3);
+	if (aux)
 	{
 		cout << endl
-			 << '\t' << "Ya existe una tabla < " << nombreTabla3 << " >" << endl
-			 << endl;
+			<< '\t' << "Ya existe una tabla < " << nombreTabla3 << " >" << endl
+			<< endl;
 		return ERROR;
 	}
-	if (checkName(aux, nombreTabla1))
-	{
-		cout << endl
-			 << '\t' << "Parece que la tabla1 no existe." << endl
-			 << endl;
-		return ERROR;
-	}
-	else
-		checkNameP(aux2, aux, nombreTabla1);
+	checkNameP(aux2, aux, nombreTabla1);
 	if (!aux)
 	{
 		cout << endl
-			 << '\t' << "Parece que la tabla1 no existe." << endl
-			 << endl;
+			<< '\t' << "Parece que la tabla1 no existe." << endl
+			<< endl;
 		return ERROR;
 	}
 	Dato pointer_aux1 = aux->pointer;
@@ -952,11 +960,34 @@ TipoRet join(char *nombreTabla1, char *nombreTabla2, char *nombreTabla3, Table d
 	if (!aux)
 	{
 		cout << endl
-			 << '\t' << "Parece que la tabla2 no existeeee." << endl
-			 << endl;
+			<< '\t' << "Parece que la tabla2 no existe." << endl
+			<< endl;
 		return ERROR;
 	}
+	
 	Dato pointer_aux2 = aux->pointer;
+	
+	while (pointer_aux2 && strcmp(pointer_aux2->calif, "primary key") != 0)
+		pointer_aux2 = pointer_aux2->sigCol;
+	if (!pointer_aux2)
+	{
+		cout << endl
+			<< '\t' << "No hay columna primary key en la tabla < " << nombreTabla2 << " >" << endl
+			<< endl;
+		return ERROR;
+	}
+	while (pointer_aux1 && strcmp(pointer_aux1->calif, "primary key") != 0)
+		pointer_aux1 = pointer_aux1->sigCol;
+	if (!pointer_aux1)
+	{
+		cout << endl
+			<< '\t' << "No hay columna primary key en la tabla " << nombreTabla1 << "." << endl
+			<< endl;
+		return ERROR;
+	}
+	
+	pointer_aux2 = aux->pointer;
+	
 	while (pointer_aux3)
 	{
 		pointer_aux2 = aux->pointer;
@@ -966,8 +997,8 @@ TipoRet join(char *nombreTabla1, char *nombreTabla2, char *nombreTabla3, Table d
 				strcmp(pointer_aux3->calif, "primary key") != 0)
 			{
 				cout << endl
-					 << '\t' << "Las tablas ingresadas tienen mas de una columna en comun." << endl
-					 << endl;
+					<< '\t' << "Las tablas ingresadas tienen mas de una columna en comun." << endl
+					<< endl;
 				return ERROR;
 			}
 			pointer_aux2 = pointer_aux2->sigCol;
@@ -975,14 +1006,14 @@ TipoRet join(char *nombreTabla1, char *nombreTabla2, char *nombreTabla3, Table d
 		pointer_aux3 = pointer_aux3->sigCol;
 	}
 	pointer_aux2 = aux->pointer;
-
+	
 	while (pointer_aux2 && strcmp(pointer_aux2->calif, "primary key") != 0)
 		pointer_aux2 = pointer_aux2->sigCol;
 	if (!pointer_aux2)
 	{
 		cout << endl
-			 << '\t' << "No hay columna primary key en la tabla " << nombreTabla2 << endl
-			 << endl;
+			<< '\t' << "No hay columna primary key en la tabla " << nombreTabla2 << endl
+			<< endl;
 		return ERROR;
 	}
 	else
@@ -990,13 +1021,16 @@ TipoRet join(char *nombreTabla1, char *nombreTabla2, char *nombreTabla3, Table d
 		strcat(data_tabla1, pointer_aux2->attName);
 		strcat(data_tabla1, pointer_aux2->tipo);
 	}
+	checkNameP(aux2, aux, nombreTabla1);
+	pointer_aux1 = aux->pointer;
+	
 	while (pointer_aux1 && strcmp(pointer_aux1->calif, "primary key") != 0)
 		pointer_aux1 = pointer_aux1->sigCol;
 	if (!pointer_aux1)
 	{
 		cout << endl
-			 << '\t' << "No hay columna primary key en la tabla " << nombreTabla1 << "." << endl
-			 << endl;
+			<< '\t' << "No hay columna primary key en la tabla " << nombreTabla1 << "." << endl
+			<< endl;
 		return ERROR;
 	}
 	else
@@ -1007,8 +1041,8 @@ TipoRet join(char *nombreTabla1, char *nombreTabla2, char *nombreTabla3, Table d
 	if (!pointer_aux1->sigTup || !pointer_aux2->sigTup)
 	{
 		cout << endl
-			 << '\t' << "Una o ambas tablas estan vacias." << endl
-			 << endl;
+			<< '\t' << "Una o ambas tablas estan vacias." << endl
+			<< endl;
 		return ERROR;
 	}
 	if (!strcmp(data_tabla1, data_tabla2))
