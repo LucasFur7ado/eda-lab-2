@@ -538,8 +538,10 @@ TipoRet printDataTable(char *NombreTabla, char *ordenadaPor, Table db)
 				 << endl;
 			return ERROR;
 		}
+		cout<<"BEFIORE"<<endl;
 		if (strcmp(ordenadaPor, "") != 0 || thereIsPk(aux->pointer))
 			orderTable(aux->pointer, matrizVals, contAtts);
+		cout<<"AFTER"<<endl;
 		if (!strcmp(aux->name, NombreTabla))
 		{
 			Dato pointer_aux = aux->pointer;
@@ -1086,12 +1088,12 @@ TipoRet join(char *nombreTabla1, char *nombreTabla2, char *nombreTabla3, Table d
 			}
 			aux = NULL;
 		}
-		//  if (!strcmp(aux->tipo, "character"))
-		//  if (!strcmp(aux->valChar, aux_2->valChar))
-		//    CopyWholeTupla_join(aux, aux_2, nombreTabla3, db);
-		//  if (!strcmp(aux->tipo, "integer"))
-		//  if (*aux->valInt == *aux_2->valInt)
-		//    CopyWholeTupla_join(aux, aux_2, nombreTabla3, db);
+		// if (!strcmp(aux->tipo, "character"))
+		// if (!strcmp(aux->valChar, aux_2->valChar))
+		// CopyWholeTupla_join(aux, aux_2, nombreTabla3, db);
+		// if (!strcmp(aux->tipo, "integer"))
+		// if (*aux->valInt == *aux_2->valInt)
+		// CopyWholeTupla_join(aux, aux_2, nombreTabla3, db);
 		return OK;
 	}
 	return OK;

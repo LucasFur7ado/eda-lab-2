@@ -66,11 +66,11 @@ void orderTable(Dato &pointer, char column[50][100], int cont)
 			else
 				val2 = 0;
 			if (((!strcmp(aux->tipo, "integer") && val1 >= val2) ||
-				 (!strcmp(aux->tipo, "character") && aux->valChar[0] >= aux->sigTup->valChar[0])))
+				 (!strcmp(aux->tipo, "character") && strcmp(aux->valChar, aux->sigTup->valChar) > 0)))
 			{
 				flag = true;
 				while (aux->sigTup && ((!strcmp(aux->tipo, "integer") && val1 >= val2) ||
-									   (!strcmp(aux->tipo, "character") && aux->valChar[0] >= aux->sigTup->valChar[0])))
+									   (!strcmp(aux->tipo, "character") && strcmp(aux->valChar, aux->sigTup->valChar) > 0)))
 				{
 					swap(aux);
 					aux3 = aux;
