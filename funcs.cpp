@@ -943,13 +943,13 @@ TipoRet join(char *nombreTabla1, char *nombreTabla2, char *nombreTabla3, Table d
 	}
 	Dato pointer_aux1 = aux->pointer;
 	Dato pointer_aux3 = aux->pointer;
-	if (checkName(aux, nombreTabla2))
-	{
-		cout << "Parece que la tabla2 no existe." << endl;
-		return ERROR;
-	}
-	else
-		checkNameP(aux2, aux, nombreTabla2);
+	// if (checkName(aux, nombreTabla2))
+	// {
+	//  cout << "Parece que la tabla2 no existe." << endl;
+	//  return ERROR;
+	// }
+	// else
+	checkNameP(aux2, aux, nombreTabla2);
 	if (!aux)
 	{
 		cout << endl
@@ -1032,12 +1032,30 @@ TipoRet join(char *nombreTabla1, char *nombreTabla2, char *nombreTabla3, Table d
 			}
 			aux = aux->sigTup;
 		}
-		if (!strcmp(aux->tipo, "character"))
-			if (!strcmp(aux->valChar, aux_2->valChar))
-				CopyWholeTupla_join(aux, aux_2, nombreTabla3, db);
-		if (!strcmp(aux->tipo, "integer"))
-			if (*aux->valInt == *aux_2->valInt)
-				CopyWholeTupla_join(aux, aux_2, nombreTabla3, db);
+		while (aux)
+		{
+			aux_2 = pointer_aux2;
+			while (aux_2)
+			{
+				if (!strcmp(aux->tipo, "character"))
+					if (!strcmp(aux->valChar, aux_2->valChar))
+						CopyWholeTupla_join(aux, aux_2, nombreTabla3, db);
+				if (!strcmp(aux->tipo, "integer"))
+					if (*aux->valInt == *aux_2->valInt)
+						CopyWholeTupla_join(aux, aux_2, nombreTabla3, db);
+				if (aux_2->sigTup)
+					aux_2 = aux_2->sigTup;
+				else
+					aux_2 = NULL;
+			}
+			aux = NULL;
+		}
+		//  if (!strcmp(aux->tipo, "character"))
+		//  if (!strcmp(aux->valChar, aux_2->valChar))
+		//    CopyWholeTupla_join(aux, aux_2, nombreTabla3, db);
+		//  if (!strcmp(aux->tipo, "integer"))
+		//  if (*aux->valInt == *aux_2->valInt)
+		//    CopyWholeTupla_join(aux, aux_2, nombreTabla3, db);
 		return OK;
 	}
 	return OK;

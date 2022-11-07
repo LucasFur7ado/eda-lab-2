@@ -45,6 +45,7 @@ void checkTables(Table);
 void checkNameP(Table &, Table &, char *);
 void checkNameSub(Table, char *, bool &);
 void checkNamePSub(Table &, Table &, char *);
+Table busca(Table, char *);
 
 bool checkName(Table, char *);
 
