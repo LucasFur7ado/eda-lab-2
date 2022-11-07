@@ -13,12 +13,12 @@ using namespace std;
 TipoRet dropTable(char *tableName, Table &db)
 {
 	Table aux = db, aux2 = db;
-	if (checkName(aux, tableName))
-	{
-		cout << "Parece que la tabla no existe." << endl;
-		return ERROR;
-	}
-	else
+	// if (checkName(aux, tableName))
+	// {
+	// 	cout << "Parece que la tabla no existe." << endl;
+	// 	return ERROR;
+	// }
+	// else
 		checkNameP(aux2, aux, tableName);
 	if (!aux)
 	{
@@ -71,12 +71,12 @@ TipoRet deleteTupla(char *atr1, char *atr2, Table &db)
 	valor_int = &valor;
 
 	Table aux = db, aux2 = db;
-	if (checkName(aux, atr1))
-	{
-		cout << "Parece que la tabla no existe." << endl;
-		return ERROR;
-	}
-	else
+	// if (checkName(aux, atr1))
+	// {
+	// 	cout << "Parece que la tabla no existe." << endl;
+	// 	return ERROR;
+	// }
+	// else
 		checkNameP(aux2, aux, atr1);
 	if (!aux)
 	{
@@ -154,12 +154,12 @@ TipoRet insertInto(char *nombreTabla, char *columnaTupla, char *valoresTupla, Ta
 			 << endl;
 		return ERROR;
 	}
-	if (checkName(aux, nombreTabla))
-	{
-		cout << "Parece que la tabla no existe." << endl;
-		return ERROR;
-	}
-	else
+	// if (checkName(aux, nombreTabla))
+	// {
+	// 	cout << "Parece que la tabla no existe." << endl;
+	// 	return ERROR;
+	// }
+	// else
 		checkNameP(aux2, aux, nombreTabla);
 	if (!aux)
 	{
@@ -291,13 +291,13 @@ TipoRet addCol(char *nombreTabla, char *NombreCol, char *tipoCol, char *califica
 		return ERROR;
 	}
 
-	if (checkName(aux, nombreTabla))
-	{
-		cout << endl
-			 << '\t' << "Parece que la tabla no existe." << endl
-			 << endl;
-		return ERROR;
-	}
+	// if (checkName(aux, nombreTabla))
+	// {
+	// 	cout << endl
+	// 		 << '\t' << "Parece que la tabla no existe." << endl
+	// 		 << endl;
+	// 	return ERROR;
+	// }
 	checkNameP(aux2, aux, nombreTabla);
 	if (!aux)
 	{
@@ -379,6 +379,7 @@ TipoRet addCol(char *nombreTabla, char *NombreCol, char *tipoCol, char *califica
 
 TipoRet createTable(char *atr1, Table &db)
 {
+	Table aux2 = db;
 	if (!strcmp(atr1, ""))
 	{
 		cout << endl
@@ -387,11 +388,10 @@ TipoRet createTable(char *atr1, Table &db)
 		return ERROR;
 	}
 	Table aux = db;
-	if (!checkName(aux, atr1))
+	checkNameP(aux2, aux, atr1);
+	if (aux)
 	{
-		cout << endl
-			 << '\t' << "La tabla ya existe." << endl
-			 << endl;
+		cout << "La tabla ya existe." << endl;
 		return ERROR;
 	}
 	insertar(db, createTableNode(atr1));
@@ -508,14 +508,14 @@ TipoRet printDataTable(char *NombreTabla, char *ordenadaPor, Table db)
 				 << endl;
 			return ERROR;
 		}
-		if (checkName(aux, NombreTabla))
-		{
-			cout << endl
-				 << '\t' << "Parece que la tabla no existe." << endl
-				 << endl;
-			return ERROR;
-		}
-		else
+		// if (checkName(aux, NombreTabla))
+		// {
+		// 	cout << endl
+		// 		 << '\t' << "Parece que la tabla no existe." << endl
+		// 		 << endl;
+		// 	return ERROR;
+		// }
+		// else
 			checkNameP(aux2, aux, NombreTabla);
 		if (!aux)
 		{
@@ -636,12 +636,12 @@ TipoRet printMetadata(char *tableName, Table db)
 				 << endl;
 			return ERROR;
 		}
-		if (checkName(aux, tableName))
-		{
-			cout << "Parece que la tabla no existe." << endl;
-			return ERROR;
-		}
-		else
+		// if (checkName(aux, tableName))
+		// {
+		// 	cout << "Parece que la tabla no existe." << endl;
+		// 	return ERROR;
+		// }
+		// else
 			checkNameP(aux2, aux, tableName);
 		if (!aux)
 		{
@@ -696,12 +696,12 @@ TipoRet printMetadata(char *tableName, Table db)
 TipoRet dropCol(char *atr1, char *atr2, Table db)
 {
 	Table aux = db, aux2 = db;
-	if (checkName(aux, atr1))
-	{
-		cout << "Parece que la tabla no existe." << endl;
-		return ERROR;
-	}
-	else
+	// if (checkName(aux, atr1))
+	// {
+	// 	cout << "Parece que la tabla no existe." << endl;
+	// 	return ERROR;
+	// }
+	// else
 		checkNameP(aux2, aux, atr1);
 	if (!aux)
 	{
@@ -859,18 +859,26 @@ TipoRet selectWhere(char *nombreTabla1, char *condicion, char *nombreTabla2, Tab
 	}
 
 	Table aux = db, aux2 = db;
-	if (!checkName(aux, nombreTabla2))
+	// if (!checkName(aux, nombreTabla2))
+	// {
+	// 	cout << "Ya existe una tabla " << nombreTabla2 << endl;
+	// 	return ERROR;
+	// }
+	// if (checkName(aux, nombreTabla1))
+	// {
+	// 	cout << "Parece que la tabla1 no existe." << endl;
+	// 	return ERROR;
+	// }
+	// else
+	checkNameP(aux2, aux, nombreTabla2);
+	if (aux)
 	{
-		cout << "Ya existe una tabla " << nombreTabla2 << endl;
+		cout << endl
+			 << '\t' << "Ya existe una tabla." << endl
+			 << endl;
 		return ERROR;
 	}
-	if (checkName(aux, nombreTabla1))
-	{
-		cout << "Parece que la tabla1 no existe." << endl;
-		return ERROR;
-	}
-	else
-		checkNameP(aux2, aux, nombreTabla1);
+	checkNameP(aux2, aux, nombreTabla1);
 	if (!aux)
 	{
 		cout << endl
@@ -918,22 +926,30 @@ TipoRet join(char *nombreTabla1, char *nombreTabla2, char *nombreTabla3, Table d
 			 << endl;
 		return ERROR;
 	}
-	if (!checkName(aux, nombreTabla3))
+	// if (!checkName(aux, nombreTabla3))
+	// {
+	// 	cout << endl
+	// 		 << '\t' << "Ya existe una tabla < " << nombreTabla3 << " >" << endl
+	// 		 << endl;
+	// 	return ERROR;
+	// }
+	// if (checkName(aux, nombreTabla1))
+	// {
+	// 	cout << endl
+	// 		 << '\t' << "Parece que la tabla1 no existe." << endl
+	// 		 << endl;
+	// 	return ERROR;
+	// }
+	// else
+	checkNameP(aux2, aux, nombreTabla3);
+	if (aux)
 	{
 		cout << endl
 			 << '\t' << "Ya existe una tabla < " << nombreTabla3 << " >" << endl
 			 << endl;
 		return ERROR;
 	}
-	if (checkName(aux, nombreTabla1))
-	{
-		cout << endl
-			 << '\t' << "Parece que la tabla1 no existe." << endl
-			 << endl;
-		return ERROR;
-	}
-	else
-		checkNameP(aux2, aux, nombreTabla1);
+	checkNameP(aux2, aux, nombreTabla1);
 	if (!aux)
 	{
 		cout << endl
@@ -953,7 +969,7 @@ TipoRet join(char *nombreTabla1, char *nombreTabla2, char *nombreTabla3, Table d
 	if (!aux)
 	{
 		cout << endl
-			 << '\t' << "Parece que la tabla2 no existeeee." << endl
+			 << '\t' << "Parece que la tabla2 no existe." << endl
 			 << endl;
 		return ERROR;
 	}
@@ -1082,22 +1098,30 @@ TipoRet select(char *tableName, char *cols, char *tableName2, Table db)
 			 << endl;
 		return ERROR;
 	}
-	if (checkName(aux, tableName))
-	{
-		cout << endl
-			 << '\t' << "Parece que la tabla no existe." << endl
-			 << endl;
-		return ERROR;
-	}
-	if (!checkName(aux, tableName2))
+	// if (checkName(aux, tableName))
+	// {
+	// 	cout << endl
+	// 		 << '\t' << "Parece que la tabla no existe." << endl
+	// 		 << endl;
+	// 	return ERROR;
+	// }
+	// if (!checkName(aux, tableName2))
+	// {
+	// 	cout << endl
+	// 		 << '\t' << "La tabla que intentas crear ya existe." << endl
+	// 		 << endl;
+	// 	return ERROR;
+	// }
+	// else
+	checkNameP(aux2, aux, tableName2);
+	if (aux)
 	{
 		cout << endl
 			 << '\t' << "La tabla que intentas crear ya existe." << endl
 			 << endl;
 		return ERROR;
 	}
-	else
-		checkNameP(aux2, aux, tableName);
+	checkNameP(aux2, aux, tableName);
 	if (!aux)
 	{
 		cout << endl
@@ -1189,8 +1213,6 @@ TipoRet select(char *tableName, char *cols, char *tableName2, Table db)
 			strcat(valsChar, auxChar);
 			strcpy(auxChar, "");
 		}
-		cout << "COLS: " << colsChar << endl;
-		cout << "VALS: " << valsChar << endl;
 		insertIntoNMW(tableName2, colsChar, valsChar, db);
 		strcpy(colsChar, "");
 		strcpy(valsChar, "");

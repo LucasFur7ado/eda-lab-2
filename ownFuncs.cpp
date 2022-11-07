@@ -36,74 +36,71 @@ void orderTable(Dato &pointer, char column[50][100], int cont)
 	Dato aux = pointer, aux2, aux3;
 	bool flag = true;
 	int val1, val2, i;
-	for (int f = 0; f < 2; f++)
+	aux = pointer;
+	if (!cont)
 	{
-		aux = pointer;
-		if (!cont)
+		while (aux && strcmp(aux->calif, "primary key") != 0)
+			aux = aux->sigCol;
+	}
+	else
+	{
+		while (strcmp(aux->attName, column[0]) != 0)
+			aux = aux->sigCol;
+	}
+	aux = aux->sigTup;
+	aux2 = aux->antTup;
+	while (flag)
+	{
+		flag = false;
+		aux = aux2->sigTup;
+		if (aux->sigTup == NULL)
+			return;
+		while (aux && aux->sigTup)
 		{
-			while (aux && strcmp(aux->calif, "primary key") != 0)
-				aux = aux->sigCol;
-		}
-		else
-		{
-			while (strcmp(aux->attName, column[0]) != 0)
-				aux = aux->sigCol;
-		}
-		aux = aux->sigTup;
-		aux2 = aux;
-		while (flag)
-		{
-			flag = false;
-			aux = aux2;
-			if (aux->sigTup == NULL)
-				return;
-			while (aux && aux->sigTup)
+			if (aux->valInt)
+				val1 = *aux->valInt;
+			else
+				val1 = 0;
+			if (aux->sigTup->valInt)
+				val2 = *aux->sigTup->valInt;
+			else
+				val2 = 0;
+			if (((!strcmp(aux->tipo, "integer") && val1 >= val2) ||
+				 (!strcmp(aux->tipo, "character") && aux->valChar[0] >= aux->sigTup->valChar[0])))
 			{
-				if (aux->valInt)
-					val1 = *aux->valInt;
-				else
-					val1 = 0;
-				if (aux->sigTup->valInt)
-					val2 = *aux->sigTup->valInt;
-				else
-					val2 = 0;
-				if (((!strcmp(aux->tipo, "integer") && val1 >= val2) ||
-					 (!strcmp(aux->tipo, "character") && aux->valChar[0] >= aux->sigTup->valChar[0])))
+				flag = true;
+				while (aux->sigTup && ((!strcmp(aux->tipo, "integer") && val1 >= val2) ||
+									   (!strcmp(aux->tipo, "character") && aux->valChar[0] >= aux->sigTup->valChar[0])))
 				{
-					flag = true;
-					while (aux->sigTup && ((!strcmp(aux->tipo, "integer") && val1 >= val2) ||
-										   (!strcmp(aux->tipo, "character") && aux->valChar[0] >= aux->sigTup->valChar[0])))
+					swap(aux);
+					aux3 = aux;
+					if (aux->sigCol || aux->antCol)
 					{
-						swap(aux);
-						aux3 = aux;
-						if (aux->sigCol || aux->antCol)
+						while (aux->sigCol)
+							aux = aux->sigCol;
+						while (aux->antCol)
 						{
-							while (aux->sigCol)
-								aux = aux->sigCol;
-							while (aux->antCol)
-							{
-								if (aux != aux3)
-								{
-									swap(aux);
-									aux = aux->antCol;
-								}
-								else
-									aux = aux->antCol;
-							}
 							if (aux != aux3)
+							{
 								swap(aux);
-							aux = aux3;
+								aux = aux->antCol;
+							}
+							else
+								aux = aux->antCol;
 						}
-						if (aux && aux->sigTup && !strcmp(aux->tipo, "integer"))
-						{
-							val1 = *aux->valInt;
-							val2 = *aux->sigTup->valInt;
-						}
+						if (aux != aux3)
+							swap(aux);
+						aux = aux3;
+					}
+					if (aux && aux->sigTup && !strcmp(aux->tipo, "integer"))
+					{
+						val1 = *aux->valInt;
+						val2 = *aux->sigTup->valInt;
 					}
 				}
-				else
-					aux = aux->sigTup;
 			}
+			else
+				aux = aux->sigTup;
 		}
 	}
 }
