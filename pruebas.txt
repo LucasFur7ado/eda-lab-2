@@ -1,0 +1,55 @@
+printTables()
+selectWhere(alumnos,edad<18, personas) error tabla no existe
+createTable(personas)
+printTables()
+addCol(personas,ci,integer,primary key)
+addCol(personas,apellido,string,not empty)
+addCol(personas,nombre,string,not empty)
+addCol(personas,edad,integer,any)
+insertInto(personas,ci:apellido:nombre:edad,11:Perez:Juan:25)
+insertInto(personas,ci:apellido:nombre:edad,22:Pereira:Agustina:15)
+insertInto(personas,ci:apellido:nombre:edad,33:Almeida:Jose:16)
+insertInto(personas,ci:apellido:nombre
+insertInto(personas,ci:apellido:nombre:edad,44:Mendiburu:Julia:15)
+insertInto(personas,ci:apellido:nombre:edad,55:Gonzalez:Francisca:36)
+printDataTable(personas)
+selectWhere(personas,edad<18,personas) error tabla existe
+selectWhere(perosnas,edad<18,alumnos) error tabla no existe
+selectWhere(personas,edad>180,alumnos) muestra tabla vac?a
+selectWhere(personas,,alumnos2)
+printDataTable(personas)
+printDataTable(alumnos)
+printMetaData(alumnos2)
+dropTable(alumnos)
+dropTable(alumnos2)
+printTables()
+selectWhere(persona,edades>180,alumnos) error tabla no existe
+printDataTable(alumnos) error tabla no existe
+selectWhere(personas,edad<18,alumnos)
+printDataTable(personas)
+printDataTable(alumnos)
+select(personas,apellido,alumnos) error tabla existe
+dropTable(alumnos)
+select(apellidos,apellido,personas) error tabla no existe
+select(personas,apellidos,alumnos) error columna no existe
+select(apellidos,apellido,alumnos)
+printTables()
+printDataTable(apellidos)
+printDataTable(personas)
+select(personas,apellido:edad,apellidos2)
+printDataTable(apellidos2)
+createTable(tiposPersona)
+addCol(tiposPersona,CI,integer,not empty)
+addCol(tiposPersona,tipo,string,not empty)
+insertInto(tiposPersona,CI:tipo,11:Administrativo)
+insertInto(tiposPersona,CI:tipo,22:Estudiante)
+insertInto(tiposPersona,CI:tipo,33:Estudiante)
+insertInto(tiposPersona,CI:tipo,44:Estudiante)
+join(tipoPersona,personas,personasTipo)
+join(tiposPersona,persona,personasTipo) 
+join(tiposPersona,personas,apellidos) error tabla existe
+printDataTable(tiposPersona)
+printDataTable(personas)
+printDataTable(personasTipo) error tabla no existe
+join(tiposPersona,personas,personasTipo)
+printDataTable(personasTipo)

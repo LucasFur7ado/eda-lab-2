@@ -188,6 +188,34 @@ TipoRet insertInto(char *nombreTabla, char *columnaTupla, char *valoresTupla, Ta
 			return ERROR;
 		}
 	}
+	for (c = 0; c < contAtts; c++)
+	{
+		pointer_aux = aux->pointer;
+		while (pointer_aux && strcmp(pointer_aux->attName, matrizAtts[c]) != 0)
+			pointer_aux = pointer_aux->sigCol;
+		if (strcmp(pointer_aux->tipo, _integer) != 0)
+		{
+			int valor = strtol(matrizVals[c], NULL, 10);
+			if (valor != 0 || !strcmp(matrizVals[c], "0"))
+			{
+				cout << endl
+					 << '\t' << "Asegurate de ingresar el tipo de dato correcto para cada columna." << endl
+					 << endl;
+				return ERROR;
+			}
+		}
+		else
+		{
+			int valor = strtol(matrizVals[c], NULL, 10);
+			if (valor == 0 && strcmp(matrizVals[c], "0") != 0)
+			{
+				cout << endl
+					 << '\t' << "Asegurate de ingresar el tipo de dato correcto para cada columna." << endl
+					 << endl;
+				return ERROR;
+			}
+		}
+	}
 	while (empty_aux)
 	{
 		insertarInicioDato(empty_aux, createDataNode(empty_aux->attName, empty_aux->tipo, empty_aux->calif));
@@ -925,7 +953,7 @@ TipoRet join(char *nombreTabla1, char *nombreTabla2, char *nombreTabla3, Table d
 	if (!aux)
 	{
 		cout << endl
-			 << '\t' << "Parece que la tabla2 no existe." << endl
+			 << '\t' << "Parece que la tabla2 no existeeee." << endl
 			 << endl;
 		return ERROR;
 	}

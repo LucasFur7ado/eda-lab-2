@@ -19,11 +19,11 @@ current_source=funcs.cpp
 path_char=\
 [source]
 path=main.cpp
-cursor=33:13
+cursor=34:10
 open=true
 [source]
 path=funcs.cpp
-cursor=894:1
+cursor=995:19
 open=true
 [source]
 path=basics.cpp
@@ -31,7 +31,7 @@ cursor=10:7
 open=true
 [source]
 path=ownFuncs.cpp
-cursor=485:24
+cursor=486:20
 open=true
 [header]
 path=heads.hpp
@@ -43,7 +43,7 @@ cursor=13:21
 open=true
 [header]
 path=ownFuncs.hpp
-cursor=19:25
+cursor=21:2
 open=true
 [config]
 name=Debug
