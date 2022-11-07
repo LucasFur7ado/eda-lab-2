@@ -808,18 +808,12 @@ TipoRet dropCol(char *atr1, char *atr2, Table db)
 
 		return OK;
 	}
-
 	return OK;
 }
 
 TipoRet selectWhere(char *nombreTabla1, char *condicion, char *nombreTabla2, Table &db)
 {
-	cout << "tabla1: " << nombreTabla1 << endl;
-	cout << "cond: " << condicion << endl;
-	cout << "tabla2: " << nombreTabla2 << endl;
-
 	char condicion2[3];
-
 	if (!strcmp(nombreTabla2, ""))
 	{
 		strcpy(nombreTabla2, condicion);

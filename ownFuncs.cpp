@@ -450,7 +450,6 @@ void CopyWholeTupla(Dato &pointer, char *nombreTabla2, Table &db)
 
 void CopyWholeTupla_join(Dato aux, Dato aux_2, char *nombreTabla3, Table &db)
 {
-
 	Table aux_T = db, aux2 = db;
 	int cont = 0;
 	char *valores;
@@ -467,13 +466,10 @@ void CopyWholeTupla_join(Dato aux, Dato aux_2, char *nombreTabla3, Table &db)
 
 	while (aux->sigCol)
 		aux = aux->sigCol;
-
 	while (aux_2->sigCol)
 		aux_2 = aux_2->sigCol;
-
 	while (aux->antCol || aux_2->antCol)
 	{
-
 		if (cont > 0)
 		{
 			valores = strcat(valores, ":");
@@ -488,13 +484,11 @@ void CopyWholeTupla_join(Dato aux, Dato aux_2, char *nombreTabla3, Table &db)
 			}
 			else
 				strcat(valores, aux->valChar);
-
 			strcat(columnas, aux->attName);
 		}
 		// PUEDE OCURRIR ERROR AQUI
 		strcat(valores, ":");
 		strcat(columnas, ":");
-
 		if (aux_2)
 		{
 			if (!strcmp(aux_2->tipo, "integer"))
@@ -504,33 +498,22 @@ void CopyWholeTupla_join(Dato aux, Dato aux_2, char *nombreTabla3, Table &db)
 			}
 			else
 				strcat(valores, aux_2->valChar);
-
 			strcat(columnas, aux_2->attName);
 		}
-
 		checkNameP(aux2, aux_T, nombreTabla3);
-
 		if (aux && !alreadyColumn(aux_T->pointer, aux->attName))
-		{
 			addCol(nombreTabla3, aux->attName, aux->tipo, aux->calif, db);
-		}
 		if (aux_2 && !alreadyColumn(aux_T->pointer, aux_2->attName))
-		{
 			if (strcmp(aux_2->calif, "primary key"))
 				addCol(nombreTabla3, aux_2->attName, aux_2->tipo, aux_2->calif, db);
-		}
-
 		if (aux->antCol)
 			aux = aux->antCol;
 		if (aux_2->antCol)
 			aux_2 = aux_2->antCol;
-
 		cont++;
 	}
-
 	strcat(valores, ":");
 	strcat(columnas, ":");
-
 	if (aux)
 	{
 		if (!strcmp(aux->tipo, "integer"))
@@ -540,14 +523,11 @@ void CopyWholeTupla_join(Dato aux, Dato aux_2, char *nombreTabla3, Table &db)
 		}
 		else
 			strcat(valores, aux->valChar);
-
 		strcat(columnas, aux->attName);
 	}
-
 	// PUEDE OCURRIR ERROR AQUI
 	strcat(valores, ":");
 	strcat(columnas, ":");
-
 	if (aux_2)
 	{
 		if (!strcmp(aux_2->tipo, "integer"))
@@ -557,12 +537,9 @@ void CopyWholeTupla_join(Dato aux, Dato aux_2, char *nombreTabla3, Table &db)
 		}
 		else
 			strcat(valores, aux_2->valChar);
-
 		strcat(columnas, aux_2->attName);
 	}
-
 	checkNameP(aux2, aux_T, nombreTabla3);
-
 	if (aux && !alreadyColumn(aux_T->pointer, aux->attName))
 	{
 		addCol(nombreTabla3, aux->attName, aux->tipo, aux->calif, db);
@@ -572,15 +549,9 @@ void CopyWholeTupla_join(Dato aux, Dato aux_2, char *nombreTabla3, Table &db)
 		if (strcmp(aux_2->calif, "primary key"))
 			addCol(nombreTabla3, aux_2->attName, aux_2->tipo, aux_2->calif, db);
 	}
-
 	aux = aux->antCol;
 	aux_2 = aux_2->antCol;
-
-	cout << columnas << endl;
-	cout << valores << endl;
-
 	insertInto(nombreTabla3, columnas, valores, db);
-
 	return;
 }
 
